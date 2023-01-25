@@ -5,7 +5,7 @@ namespace Templater.Builder;
 public class TemplateBuilder
 {
     private readonly StringBuilder template;
-
+    
     public TemplateBuilder() => template = new StringBuilder(100);
     public TemplateBuilder(string head) => template = new StringBuilder(head, 100);
     public string Build() => template.ToString();
@@ -25,7 +25,7 @@ public class TemplateBuilder
     public TemplateBuilder AddAttribute(string name, string value)
     {
         var pos = template.ToString().LastIndexOf('>');
-        template.Insert(pos, $" {name}={value}");
+        template.Insert(pos, $@" {name}=""{value}""");
         return this;
     }
     

@@ -10,7 +10,7 @@ public class RegexPattern : Pattern
         {
             var match = regexp.Match(text.Substring(position));
             return match.Success
-                ? new PatternResult(match.Value, position + match.Value.Length)
+                ? new PatternResult(match.Value, match.Index+match.Value.Length)
                 : null;
         };
     }

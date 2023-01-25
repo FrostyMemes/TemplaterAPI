@@ -3,31 +3,32 @@ using System.Text.RegularExpressions;
 
 namespace Templater.Builder;
 
-public class TemplateParser: TemplatePatterns
+public class TemplateParser : TemplatePatterns
 {
-    private readonly string _markdown;
     private readonly TemplateBuilder builder;
 
-    public TemplateParser(string markdown)
+    public TemplateParser()
     {
-        _markdown = markdown;
-        builder = new();
+        builder = new TemplateBuilder();
     }
 
-    public string Parse()
+    public string Parse(string markdown)
     {
-        StringBuilder content = new ();
-        List<string> keys = new ();
+        StringBuilder content = new();
+        List<string> keys = new();
         string tag, type, title, text;
         string literalKey, litrealBody;
-        int id = 0;
+        string[] literalParts = null;
+        string[] options = null;
+        var id = 0;
+        
 
         builder.Clear();
         builder.AddTag("form");
 
         try
         {
-            var literals = _markdown
+            var literals = markdown
                 .Split(';')
                 .Where(literal => !string.IsNullOrWhiteSpace(literal))
                 .Select(literal => literal.Trim())
@@ -37,12 +38,21 @@ public class TemplateParser: TemplatePatterns
             {
                 content.Clear();
 
-                var literalParts = literal.Split(':');
+                literalParts = literal.Split(':');
                 literalKey = literalParts[0].Trim();
                 litrealBody = literalParts[1].Trim();
 
+                builder.AddTag("div");
+                
+                var classDiv = ptrRoundBraceContent.Execute(literalKey, 0);
+                if (!IsNull(classDiv.Result))
+                {
+                    builder.AddAttribute("class", classDiv.Result);
+                    literalKey = Regex.Replace(literalKey, @"\((.*)\)", "").Trim();
+                }
+
                 if (keys.Contains(literalKey))
-                    throw new KeyExistingException($"Key already exist: {literalKey}");
+                    throw new KeyExistingException($"The key ${literalKey} already exist");
 
                 keys.Append(literalKey);
                 title = literalKey;
@@ -50,35 +60,30 @@ public class TemplateParser: TemplatePatterns
                 if (!IsNull(ptrMarksArea.Execute(litrealBody, 0).Result))
                 {
                     var markGroup = ptrMarkGroupWords.Matches(litrealBody);
-                    tag = (markGroup.Count > 1) ? "textarea" : "input";
+                    tag = markGroup.Count > 1 ? "textarea" : "input";
 
-                    foreach (Match match in markGroup)
-                    {
+                    foreach (Match match in markGroup) 
+                    { 
                         text = ptrMarksContent.Execute(match.Value, 0).Result;
-                        content.Append((String.IsNullOrEmpty(text)) ? "\n" : $"{text}\n");
+                        content.Append(string.IsNullOrEmpty(text) ? "\n" : $"{text}\n");
                     }
 
                     builder
-                        .AddTag("div")
-                        .AddAttribute("class", "form-floating mb-3")
-                            .AddTag(tag)
-                            .AddAttribute("class", "form-control")
-                            .AddAttribute("name", literalKey)
-                            .AddAttribute("id", literalKey)
-                            .AddAttribute("placeholder", title)
-                            .AddText((tag == "input")
-                                ? $" value={content}>"
-                                : $"{content} </{tag}>")
-                            .AddTag("label")
-                            .AddAttribute("for", literalKey)
-                            .AddText(title)
-                            .AddTag("/label")
-                        .AddTag("/div");
+                        .AddTag(tag)
+                        .AddAttribute("name", literalKey)
+                        .AddAttribute("id", literalKey)
+                        .AddAttribute("placeholder", title)
+                        .AddText(tag == "input"
+                            ? $" value={content}>"
+                            : $"{content} </{tag}>")
+                        .AddTag("label")
+                        .AddAttribute("for", literalKey)
+                        .AddText(title)
+                        .AddTag("/label");
                 }
                 else
                 {
-                    builder.AddTag("div");
-                    var options = litrealBody
+                    options = litrealBody
                         .Split(',')
                         .Where(option => !string.IsNullOrWhiteSpace(option))
                         .Select(option => option.Trim())
@@ -89,16 +94,14 @@ public class TemplateParser: TemplatePatterns
                         builder
                             .AddTag("label")
                             .AddAttribute("for", literalKey)
-                            .AddAttribute("class", "form-label")
                             .AddText(title)
                             .AddTag("/label")
                             .AddTag("select")
                             .AddAttribute("name", literalKey)
                             .AddAttribute("id", literalKey)
-                            .AddAttribute("class", "form-select mb-3")
                             .AddAttribute("aria-label", literalKey);
 
-                        foreach (var option in options)
+                        foreach (var option in options) 
                         {
                             if (!IsNull(ptrVerticalBraceArea.Execute(option, 0).Result))
                             {
@@ -109,14 +112,13 @@ public class TemplateParser: TemplatePatterns
                                     .AddText(optionTemplate.Result)
                                     .AddTag("/option");
                             }
-
                             builder.AddTag("/select");
                         }
                     }
                     else
                     {
                         id = 1;
-                        type = (IsNull(ptrRoundBraceArea.Execute(options[0], 0).Result))
+                        type = IsNull(ptrRoundBraceArea.Execute(options[0], 0).Result)
                             ? "checkbox"
                             : "radio";
 
@@ -126,7 +128,7 @@ public class TemplateParser: TemplatePatterns
                             {
                                 var temp = ptrEnumTags[type][1].Execute(option, 0);
 
-                                var check = String.IsNullOrEmpty(temp.Result)
+                                var check = string.IsNullOrEmpty(temp.Result)
                                     ? string.Empty
                                     : "checked";
 
@@ -135,29 +137,22 @@ public class TemplateParser: TemplatePatterns
                                     .Trim();
 
                                 builder
-                                    .AddTag("div")
-                                    .AddAttribute("class", "form-check")
-                                        .AddTag("input")
-                                        .AddAttribute("class", "form-check-input")
-                                        .AddAttribute("type", type)
-                                        .AddAttribute("id", $"{id}")
-                                        .AddAttribute("name", literalKey)
-                                        .AddAttribute(check)
-                                        .AddTag("/input")
-                                        .AddTag("label")
-                                        .AddAttribute("class", "form-check-label")
-                                        .AddAttribute("for", $"{id}")
-                                        .AddText(optionLabel)
-                                        .AddTag("/label")
-                                    .AddTag("/div");
-
+                                    .AddTag("input")
+                                    .AddAttribute("type", type)
+                                    .AddAttribute("id", $"{id}")
+                                    .AddAttribute("name", literalKey)
+                                    .AddAttribute(check)
+                                    .AddTag("/input")
+                                    .AddTag("label")
+                                    .AddAttribute("for", $"{id}")
+                                    .AddText(optionLabel)
+                                    .AddTag("/label");
                                 id++;
                             }
                         }
                     }
-
-                    builder.AddTag("/div");
                 }
+                builder.AddTag("/div");
             }
 
             builder.AddTag("/form");
@@ -170,23 +165,17 @@ public class TemplateParser: TemplatePatterns
                 .AddTag("div")
                 .AddAttribute("class", "alert alert-danger")
                 .AddAttribute("role", "alert")
-                .AddText((e is KeyExistingException) 
+                .AddText(e is KeyExistingException
                     ? e.Message
                     : "Error: check syntax")
                 .AddTag("/div");
-            
+
             return builder.Build();
         }
     }
-    
+
     private bool IsNull(object? value)
     {
         return value == null;
     }
-    
-    public string GetMarkdown()
-    {
-        return _markdown;
-    }
-
 }
