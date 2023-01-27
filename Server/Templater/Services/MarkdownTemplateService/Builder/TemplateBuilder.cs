@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Templater.Builder;
+namespace Templater.Services.MarkdownTemplateService.Builder;
 
 public class TemplateBuilder
 {

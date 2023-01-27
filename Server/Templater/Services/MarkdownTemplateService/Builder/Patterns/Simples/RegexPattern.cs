@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Templater.Patterns;
+namespace Templater.Services.MarkdownTemplateService.Builder.Patterns.Simples;
 
 public class RegexPattern : Pattern
 {

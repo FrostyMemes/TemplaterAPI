@@ -1,4 +1,4 @@
-﻿namespace Templater.Patterns.Combinators;
+﻿namespace Templater.Services.MarkdownTemplateService.Builder.Patterns.Combinators;
 
 public class AnyPattern : Pattern
 {

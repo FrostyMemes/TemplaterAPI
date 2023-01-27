@@ -1,4 +1,4 @@
-﻿namespace Templater.Patterns;
+﻿namespace Templater.Services.MarkdownTemplateService.Builder.Patterns;
 
 public abstract class Pattern
 {
