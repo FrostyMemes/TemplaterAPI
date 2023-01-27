@@ -66,3 +66,38 @@ D:\Projects\C Sharp Projects\Templater API\Server\Templater\obj\Debug\net7.0\ref
 D:\Projects\C Sharp Projects\Templater API\Server\Templater\obj\Debug\net7.0\Templater.pdb
 D:\Projects\C Sharp Projects\Templater API\Server\Templater\obj\Debug\net7.0\Templater.genruntimeconfig.cache
 D:\Projects\C Sharp Projects\Templater API\Server\Templater\obj\Debug\net7.0\ref\Templater.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\appsettings.Development.json
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\appsettings.json
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Templater.exe
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Templater.deps.json
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Templater.runtimeconfig.json
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Templater.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Templater.pdb
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Microsoft.AspNetCore.OpenApi.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Microsoft.OpenApi.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Pipelines.Sockets.Unofficial.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\StackExchange.Redis.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.csproj.AssemblyReference.cache
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.AssemblyInfoInputs.cache
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.AssemblyInfo.cs
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.csproj.CoreCompileInputs.cache
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.MvcApplicationPartsAssemblyInfo.cs
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.MvcApplicationPartsAssemblyInfo.cache
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\staticwebassets\msbuild.Templater.Microsoft.AspNetCore.StaticWebAssets.props
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\staticwebassets\msbuild.build.Templater.props
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Templater.props
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Templater.props
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\staticwebassets.pack.json
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\staticwebassets.build.json
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\staticwebassets.development.json
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\scopedcss\bundle\Templater.styles.css
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.csproj.CopyComplete
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.dll
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\refint\Templater.dll
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.pdb
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.genruntimeconfig.cache
+D:\Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\ref\Templater.dll
