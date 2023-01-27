@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Templater.Builder;
+using StackExchange.Redis;
+using Templater.Services.MarkdownTemplateService;
 
 namespace Templater.Controllers;
 
@@ -8,28 +9,17 @@ namespace Templater.Controllers;
 
 public class TemplaterController : ControllerBase
 {
-    private readonly ILogger<TemplaterController> _logger;
-    private readonly TemplateParser _templateParser;
+    private readonly ITemplateParser _templateParser;
 
-    public TemplaterController(ILogger<TemplaterController> logger)
+    public TemplaterController(ITemplateParser templateParser)
     {
-        _logger = logger;
-        _templateParser = new TemplateParser();
+        _templateParser = templateParser;
     }
     
     [HttpGet(Name = "TemplateMarkdown")]
-    public IActionResult Get(string markdown)
+    public async Task<string> Get(string markdown)
     {
-        try
-        {
-            var template = _templateParser.Parse(markdown);
-            return Ok(template);
-        }
-        catch (Exception e)
-        {
-            return StatusCode(500);
-        }
-        
-        
+        var result = await _templateParser.Parse(markdown);
+        return result;
     }
 }
