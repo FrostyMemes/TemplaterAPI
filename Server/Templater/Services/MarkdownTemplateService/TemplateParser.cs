@@ -1,19 +1,88 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using StackExchange.Redis;
+using Templater.Services.MarkdownTemplateService.Builder;
+using Templater.Services.MarkdownTemplateService.Builder.Patterns;
+using Templater.Services.MarkdownTemplateService.Builder.Patterns.Combinators;
+using Templater.Services.MarkdownTemplateService.Builder.Patterns.Simples;
 
-namespace Templater.Builder;
+namespace Templater.Services.MarkdownTemplateService;
 
-public class TemplateParser : TemplatePatterns
+public class TemplateParser: ITemplateParser
 {
-    private readonly TemplateBuilder builder;
+    static readonly PatternResult VoidResult = new (null, -1);
+    
+    public static readonly Regex ptrMarkGroupWords = new (
+        @"""([^""\\]*(\\.[^""\\]*)*)""|\'([^\'\\]*(\\.[^\'\\]*)*)\'");
+    
+    public static readonly AlternativePattern ptrSquareBraceArea = new (
+        new RegexPattern(
+            new Regex(@"\[(.*)\]")), VoidResult);
 
-    public TemplateParser()
+    public static readonly AlternativePattern ptrRoundBraceArea = new (
+        new RegexPattern(
+            new Regex(@"\((.*)\)")), VoidResult);
+
+    public static readonly AlternativePattern ptrVerticalBraceArea = new (
+        new RegexPattern(
+            new Regex(@"\|(.*)\|")), VoidResult);
+
+    public static readonly AlternativePattern ptrFigureBraceArea = new (
+        new RegexPattern(
+            new Regex(@"\{(.*)\}")), VoidResult);
+    
+    public static readonly AlternativePattern ptrSingleMarkArea = new (
+        new RegexPattern(
+            new Regex(@"\'(.*)\'")), VoidResult);
+    
+    public static readonly AlternativePattern ptrDuoMarkArea = new (
+        new RegexPattern(
+            new Regex(@"\""(.*)\""")), VoidResult);
+
+    public static readonly AlternativePattern ptrRoundBraceContent = new (
+        new RegexPattern(
+            new Regex(@"(?<=\()(.*?)(?=\))")), VoidResult);
+
+    public static readonly AlternativePattern ptrSquareBraceContent = new (
+        new RegexPattern(
+            new Regex(@"(?<=\[)(.*?)(?=\])")), VoidResult);
+
+    public static readonly AlternativePattern ptrVerticalBraceContent = new (
+        new RegexPattern(
+            new Regex(@"(?<=\|)(.*?)(?=\|)")), VoidResult);
+
+    public static readonly AlternativePattern ptrFigureBraceContent = new (
+        new RegexPattern(
+            new Regex(@"(?<=\{)(.*?)(?=\})")), VoidResult);
+
+    public static readonly AlternativePattern ptrSingleMarkContent = new (
+        new RegexPattern(
+            new Regex(@"(?<=\')(.*?)(?=\')")), VoidResult);
+
+    public static readonly AlternativePattern ptrDuoMarkContent = new (
+        new RegexPattern(
+            new Regex(@"(?<=\"")(.*?)(?=\"")")), VoidResult);
+    
+    public static readonly AlternativePattern ptrMarksArea = new (
+        new AnyPattern(ptrSingleMarkArea, ptrDuoMarkArea), VoidResult);
+    
+    public static readonly AlternativePattern ptrMarksContent = new (
+        new AnyPattern(ptrSingleMarkContent, ptrDuoMarkContent), VoidResult);
+    
+    public static readonly Dictionary<string, Pattern[]> ptrEnumTags = new ()
     {
-        builder = new TemplateBuilder();
+        {"radio", new Pattern[]{ptrRoundBraceArea, ptrRoundBraceContent}},
+        {"checkbox", new Pattern[]{ptrSquareBraceArea, ptrSquareBraceContent}}
+    };
+
+    private IDatabase _redis;
+    public TemplateParser(IConnectionMultiplexer muxer)
+    {
+        _redis = muxer.GetDatabase();
     }
-
-    public string Parse(string markdown)
+    public async Task<string> Parse(string markdown)
     {
+        TemplateBuilder builder = new();
         StringBuilder content = new();
         List<string> keys = new();
         string tag, type, title, text;
@@ -45,7 +114,7 @@ public class TemplateParser : TemplatePatterns
                 builder.AddTag("div");
                 
                 var classDiv = ptrRoundBraceContent.Execute(literalKey, 0);
-                if (!IsNull(classDiv.Result))
+                if (!IsNull(classDiv?.Result))
                 {
                     builder.AddAttribute("class", classDiv.Result);
                     literalKey = Regex.Replace(literalKey, @"\((.*)\)", "").Trim();
@@ -57,7 +126,7 @@ public class TemplateParser : TemplatePatterns
                 keys.Append(literalKey);
                 title = literalKey;
 
-                if (!IsNull(ptrMarksArea.Execute(litrealBody, 0).Result))
+                if (!IsNull(ptrMarksArea.Execute(litrealBody, 0)?.Result))
                 {
                     var markGroup = ptrMarkGroupWords.Matches(litrealBody);
                     tag = markGroup.Count > 1 ? "textarea" : "input";
@@ -103,7 +172,7 @@ public class TemplateParser : TemplatePatterns
 
                         foreach (var option in options) 
                         {
-                            if (!IsNull(ptrVerticalBraceArea.Execute(option, 0).Result))
+                            if (!IsNull(ptrVerticalBraceArea.Execute(option, 0)?.Result))
                             {
                                 var optionTemplate = ptrVerticalBraceContent.Execute(option, 0);
                                 builder
@@ -173,9 +242,15 @@ public class TemplateParser : TemplatePatterns
             return builder.Build();
         }
     }
-
+    
     private bool IsNull(object? value)
     {
         return value == null;
+    }
+    
+    private class KeyExistingException : Exception
+    { 
+        public KeyExistingException(string message) 
+            : base(message) { }
     }
 }
