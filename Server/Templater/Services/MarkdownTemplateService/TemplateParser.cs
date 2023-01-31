@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using StackExchange.Redis;
@@ -75,25 +76,26 @@ public class TemplateParser: ITemplateParser
         {"checkbox", new Pattern[]{ptrSquareBraceArea, ptrSquareBraceContent}}
     };
 
-    private IDatabase _redis;
+    private readonly IDatabase _redis;
+    
     public TemplateParser(IConnectionMultiplexer muxer)
     {
         _redis = muxer.GetDatabase();
     }
-    public async Task<string> Parse(string markdown)
+    public async Task<string> ParseAsync(string markdown)
     {
+        TemplateBuilder templateHTML = new();
         TemplateBuilder builder = new();
         StringBuilder content = new();
         List<string> keys = new();
         string tag, type, title, text;
         string literalKey, litrealBody;
+        string redisValue, strHashCode;
         string[] literalParts = null;
         string[] options = null;
-        var id = 0;
+        int id = 0;
         
-
-        builder.Clear();
-        builder.AddTag("form");
+        templateHTML.AddTag("form");
 
         try
         {
@@ -105,12 +107,24 @@ public class TemplateParser: ITemplateParser
 
             foreach (var literal in literals)
             {
-                content.Clear();
-
+                strHashCode = GetStableHashCode(literal);
+                redisValue = await _redis.StringGetAsync(strHashCode);
+                if (!String.IsNullOrEmpty(redisValue))
+                {
+                    templateHTML.AddText(redisValue);
+                    continue;
+                }
+                
                 literalParts = literal.Split(':');
                 literalKey = literalParts[0].Trim();
                 litrealBody = literalParts[1].Trim();
+                
+                if (keys.Contains(literalKey))
+                    throw new KeyExistingException($"The key ${literalKey} already exist");
 
+                content.Clear();
+                builder.Clear();
+                
                 builder.AddTag("div");
                 
                 var classDiv = ptrRoundBraceContent.Execute(literalKey, 0);
@@ -119,10 +133,7 @@ public class TemplateParser: ITemplateParser
                     builder.AddAttribute("class", classDiv.Result);
                     literalKey = Regex.Replace(literalKey, @"\((.*)\)", "").Trim();
                 }
-
-                if (keys.Contains(literalKey))
-                    throw new KeyExistingException($"The key ${literalKey} already exist");
-
+                
                 keys.Append(literalKey);
                 title = literalKey;
 
@@ -202,7 +213,7 @@ public class TemplateParser: ITemplateParser
                                     : "checked";
 
                                 var optionLabel = option
-                                    .Substring(temp.EndPosition + 2)
+                                    .Substring(temp.EndPosition + 1)
                                     .Trim();
 
                                 builder
@@ -221,11 +232,12 @@ public class TemplateParser: ITemplateParser
                         }
                     }
                 }
-                builder.AddTag("/div");
+                templateHTML.AddText(builder.AddTag("/div").Build());
+                await _redis.StringAppendAsync(strHashCode,builder.Build());
+                await _redis.KeyExpireAsync(strHashCode, TimeSpan.FromSeconds(1800));
             }
-
-            builder.AddTag("/form");
-            return builder.Build();
+            
+            return templateHTML.AddTag("/form").Build();
         }
         catch (Exception e)
         {
@@ -234,9 +246,7 @@ public class TemplateParser: ITemplateParser
                 .AddTag("div")
                 .AddAttribute("class", "alert alert-danger")
                 .AddAttribute("role", "alert")
-                .AddText(e is KeyExistingException
-                    ? e.Message
-                    : "Error: check syntax")
+                .AddText(e.Message)
                 .AddTag("/div");
 
             return builder.Build();
@@ -246,6 +256,25 @@ public class TemplateParser: ITemplateParser
     private bool IsNull(object? value)
     {
         return value == null;
+    }
+    
+    private string GetStableHashCode(string str)
+    {
+        unchecked
+        {
+            int hash1 = 5381;
+            int hash2 = hash1;
+
+            for(int i = 0; i < str.Length && str[i] != '\0'; i += 2)
+            {
+                hash1 = ((hash1 << 5) + hash1) ^ str[i];
+                if (i == str.Length - 1 || str[i+1] == '\0')
+                    break;
+                hash2 = ((hash2 << 5) + hash2) ^ str[i+1];
+            }
+
+            return (hash1 + (hash2*1566083941)).ToString();
+        }
     }
     
     private class KeyExistingException : Exception
