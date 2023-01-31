@@ -2,5 +2,5 @@
 
 public interface ITemplateParser
 {
-    Task<String> Parse(string markdown);
+    Task<String> ParseAsync(string markdown);
 }

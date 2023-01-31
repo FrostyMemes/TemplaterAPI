@@ -19,7 +19,7 @@ public class TemplaterController : ControllerBase
     [HttpGet(Name = "TemplateMarkdown")]
     public async Task<string> Get(string markdown)
     {
-        var result = await _templateParser.Parse(markdown);
+        var result = await _templateParser.ParseAsync(markdown);
         return result;
     }
 }
