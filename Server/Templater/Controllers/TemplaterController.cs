@@ -5,7 +5,7 @@ using Templater.Services.MarkdownTemplateService;
 namespace Templater.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api")]
 
 public class TemplaterController : ControllerBase
 {
