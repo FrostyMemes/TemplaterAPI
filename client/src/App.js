@@ -1,25 +1,20 @@
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    console.log(process.env.REACT_APP_BACKEND_IP)
+    return (
+        <div>
+            <div className="render-space">
+                <div className="input-area">
+                    <textarea placeholder={process.env.REACT_APP_BACKEND_IP}></textarea>
+                </div>
+                <div className="render-area">
+                    Вывод
+                </div>
+            </div>
+            <input type="button" value="Отправить"/>
+        </div>
+    );
 }
 
 export default App;
