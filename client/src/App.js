@@ -1,32 +1,42 @@
 import './App.css';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import axios from "axios";
+import useDebounce from "./use-debounce";
 
 function App() {
     const apiUrl = `${process.env.REACT_APP_BACKEND_ADDRESS}/api`
     const [markdown, setMarkdown] = useState('')
-    const [mdRender, setMdrender] = useState('')
+    const [mdRender, setMdRender] = useState('')
 
-    const sendMarkdown = function (){
-        axios.get(`http://${apiUrl}?markdown=${markdown}`)
-            .then(response => setMdrender(response.data))
+    const debouncedSearchTerm = useDebounce(markdown, 700);
+    function sendMarkdown(value) {
+        axios.get(`http://${apiUrl}?markdown=${value}`)
+            .then(response => setMdRender(response.data))
             .catch(error => {
-                setMdrender(error.message)
+                setMdRender(error.message)
             });
-        //setMarkdown(`${apiUrl}?markdown=${markdown}`)
     }
+
+    useEffect(
+        () => {
+            if (debouncedSearchTerm) {
+                sendMarkdown(debouncedSearchTerm)
+            } else {
+                setMdRender('');
+            }
+        },
+        [debouncedSearchTerm]
+    );
 
     return (
         <div>
-            <div className="render-space">
+            <div className="work-space">
                 <div className="input-area">
                     <textarea placeholder={apiUrl}
                               onChange={(e) => setMarkdown(e.target.value)}>
                     </textarea>
                 </div>
-                <div className="render-area">
-                    {mdRender}
-                </div>
+                <div className="render-area" dangerouslySetInnerHTML={{__html: mdRender}}></div>
             </div>
             <input type="button" value="Отправить" onClick={sendMarkdown}/>
         </div>
