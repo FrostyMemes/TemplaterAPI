@@ -1,8 +1,8 @@
-.render-space {
+.work-space {
   display: flex;
 }
 
-.render-space> div{
+.work-space> div{
   height: 60vh;
   width: 50vh;
   margin: 5vh auto;
