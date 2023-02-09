@@ -95,7 +95,7 @@ public class TemplateParser: ITemplateParser
         string[] options = null;
         int id = 0;
         
-        templateHTML.AddTag("form");
+        templateHTML.AddTag("form").AddAttribute("class", "templateForm");
 
         try
         {
@@ -192,8 +192,8 @@ public class TemplateParser: ITemplateParser
                                     .AddText(optionTemplate.Result)
                                     .AddTag("/option");
                             }
-                            builder.AddTag("/select");
                         }
+                        builder.AddTag("/select");
                     }
                     else
                     {
