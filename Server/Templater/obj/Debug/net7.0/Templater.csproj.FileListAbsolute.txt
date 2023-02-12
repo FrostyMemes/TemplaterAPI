@@ -146,3 +146,13 @@ D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\refi
 D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.pdb
 D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\Templater.genruntimeconfig.cache
 D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\obj\Debug\net7.0\ref\Templater.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Humanizer.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Mono.TextTemplating.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\MySqlConnector.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.dll
+D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\System.CodeDom.dll
