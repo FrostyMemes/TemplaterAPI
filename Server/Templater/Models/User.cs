@@ -12,4 +12,6 @@ public class User
     [Required(ErrorMessage = "Email field is required.")]
     [EmailAddress]
     public string Email { get; set; }
+    
+    public ICollection<Template> Templates { get; set; }
 }
