@@ -6,7 +6,6 @@ namespace Templater.Controllers;
 
 [ApiController]
 [Route("api")]
-
 public class TemplaterController : ControllerBase
 {
     private readonly ITemplateParser _templateParser;
@@ -15,8 +14,8 @@ public class TemplaterController : ControllerBase
     {
         _templateParser = templateParser;
     }
-    
-     [HttpGet]
+
+    [HttpGet("{markdown}")]
     public async Task<string> Get(string markdown)
     {
         var result = await _templateParser.ParseAsync(markdown);
