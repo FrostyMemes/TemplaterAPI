@@ -85,7 +85,7 @@ public class TemplateParser: ITemplateParser
     public async Task<string> ParseAsync(string markdown)
     {
         TemplateBuilder templateHTML = new();
-        TemplateBuilder builder = new();
+        TemplateBuilder tempBuilder = new();
         StringBuilder content = new();
         List<string> keys = new();
         string tag, type, title, text;
@@ -123,14 +123,14 @@ public class TemplateParser: ITemplateParser
                     throw new KeyExistingException($"The key ${literalKey} already exist");
 
                 content.Clear();
-                builder.Clear();
+                tempBuilder.Clear();
                 
-                builder.AddTag("div");
+                tempBuilder.AddTag("div");
                 
                 var classDiv = ptrRoundBraceContent.Execute(literalKey, 0);
                 if (!IsNull(classDiv?.Result))
                 {
-                    builder.AddAttribute("class", classDiv.Result);
+                    tempBuilder.AddAttribute("class", classDiv.Result);
                     literalKey = Regex.Replace(literalKey, @"\((.*)\)", "").Trim();
                 }
                 
@@ -148,7 +148,7 @@ public class TemplateParser: ITemplateParser
                         content.Append(string.IsNullOrEmpty(text) ? "\n" : $"{text}\n");
                     }
 
-                    builder
+                    tempBuilder
                         .AddTag(tag)
                         .AddAttribute("name", literalKey)
                         .AddAttribute("id", literalKey)
@@ -171,7 +171,7 @@ public class TemplateParser: ITemplateParser
 
                     if (!IsNull(ptrVerticalBraceArea.Execute(options[0], 0).Result))
                     {
-                        builder
+                        tempBuilder
                             .AddTag("label")
                             .AddAttribute("for", literalKey)
                             .AddText(title)
@@ -186,14 +186,14 @@ public class TemplateParser: ITemplateParser
                             if (!IsNull(ptrVerticalBraceArea.Execute(option, 0)?.Result))
                             {
                                 var optionTemplate = ptrVerticalBraceContent.Execute(option, 0);
-                                builder
+                                tempBuilder
                                     .AddTag("option")
                                     .AddAttribute("value", optionTemplate.Result)
                                     .AddText(optionTemplate.Result)
                                     .AddTag("/option");
                             }
                         }
-                        builder.AddTag("/select");
+                        tempBuilder.AddTag("/select");
                     }
                     else
                     {
@@ -216,7 +216,7 @@ public class TemplateParser: ITemplateParser
                                     .Substring(temp.EndPosition + 1)
                                     .Trim();
 
-                                builder
+                                tempBuilder
                                     .AddTag("input")
                                     .AddAttribute("type", type)
                                     .AddAttribute("id", $"{id}")
@@ -232,8 +232,8 @@ public class TemplateParser: ITemplateParser
                         }
                     }
                 }
-                templateHTML.AddText(builder.AddTag("/div").Build());
-                await _redis.StringAppendAsync(strHashCode,builder.Build());
+                templateHTML.AddText(tempBuilder.AddTag("/div").Build());
+                await _redis.StringAppendAsync(strHashCode,tempBuilder.Build());
                 await _redis.KeyExpireAsync(strHashCode, TimeSpan.FromSeconds(1800));
             }
             
@@ -241,15 +241,15 @@ public class TemplateParser: ITemplateParser
         }
         catch (Exception e)
         {
-            builder.Clear();
-            builder
+            tempBuilder.Clear();
+            tempBuilder
                 .AddTag("div")
                 .AddAttribute("class", "alert alert-danger")
                 .AddAttribute("role", "alert")
                 .AddText(e.Message)
                 .AddTag("/div");
 
-            return builder.Build();
+            return tempBuilder.Build();
         }
     }
     
