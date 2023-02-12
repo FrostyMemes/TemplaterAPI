@@ -1,8 +1,12 @@
-.work-space {
+.editor {
+
+}
+
+.editor-area{
   display: flex;
 }
 
-.work-space> div{
+.editor-area> div{
   height: 60vh;
   width: 50vh;
   margin: 5vh auto;
@@ -19,6 +23,6 @@
 }
 
 .render-area{
-  background-color: #c2c9c9;
+  background-color: #b5c2c2;
 }
 
