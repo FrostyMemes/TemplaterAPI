@@ -76,12 +76,13 @@ public class TemplateParser: ITemplateParser
         {"checkbox", new Pattern[]{ptrSquareBraceArea, ptrSquareBraceContent}}
     };
 
-    private readonly IDatabase _redis;
+    /*private readonly IDatabase _redis;
     
     public TemplateParser(IConnectionMultiplexer muxer)
     {
         _redis = muxer.GetDatabase();
-    }
+    }*/
+    
     public async Task<string> ParseAsync(string markdown)
     {
         TemplateBuilder templateHTML = new();
@@ -108,12 +109,12 @@ public class TemplateParser: ITemplateParser
             foreach (var literal in literals)
             {
                 strHashCode = GetStableHashCode(literal);
-                redisValue = await _redis.StringGetAsync(strHashCode);
+                /*redisValue = await _redis.StringGetAsync(strHashCode);
                 if (!String.IsNullOrEmpty(redisValue))
                 {
                     templateHTML.AddText(redisValue);
                     continue;
-                }
+                }*/
                 
                 literalParts = literal.Split(':');
                 literalKey = literalParts[0].Trim();
@@ -233,8 +234,8 @@ public class TemplateParser: ITemplateParser
                     }
                 }
                 templateHTML.AddText(tempBuilder.AddTag("/div").Build());
-                await _redis.StringAppendAsync(strHashCode,tempBuilder.Build());
-                await _redis.KeyExpireAsync(strHashCode, TimeSpan.FromSeconds(1800));
+                /*await _redis.StringAppendAsync(strHashCode,tempBuilder.Build());
+                await _redis.KeyExpireAsync(strHashCode, TimeSpan.FromSeconds(1800));*/
             }
             
             return templateHTML.AddTag("/form").Build();
