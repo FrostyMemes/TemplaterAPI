@@ -7,7 +7,7 @@ public class User
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Nickname field is required.")]
-    public string Nickname { get; set; }
+    public string Username { get; set; }
     
     [Required(ErrorMessage = "Email field is required.")]
     [EmailAddress]

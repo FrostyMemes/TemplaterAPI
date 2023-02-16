@@ -12,4 +12,7 @@ public class Template
     
     [Required(ErrorMessage = "Markup field is required.")]
     public string Markup { get; set; }
+
+    public int UserId { get; set; }
+    public User User { get; set; }
 }
