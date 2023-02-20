@@ -2,9 +2,9 @@
 
 public interface ITemplateRepository
 {
-    Task<IEnumerable<Template>> GetAllTemplates();
-    Task<Template> GetDetails(int id);
-    Task<bool> InsertTemplate(Template template);
-    Task<bool> UpdateTemplate(Template template);
-    Task<bool> DeleteTemplate(int id);
+    Task<IEnumerable<Template>> GetAllTemplatesAsync();
+    Task<Template> GetTemplateAsync(int id);
+    Task<bool> InsertTemplateAsync(TemplateModel template);
+    Task<bool> UpdateTemplateAsync(TemplateModel template);
+    Task<bool> DeleteTemplateAsync(int id);
 }

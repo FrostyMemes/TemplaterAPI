@@ -2,27 +2,27 @@
 
 public class TemplateRepository: ITemplateRepository
 {
-    public Task<IEnumerable<Template>> GetAllTemplates()
+    public Task<IEnumerable<Template>> GetAllTemplatesAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<Template> GetDetails(int id)
+    public Task<Template> GetTemplateAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> InsertTemplate(Template template)
+    public Task<bool> InsertTemplateAsync(TemplateModel template)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> UpdateTemplate(Template template)
+    public Task<bool> UpdateTemplateAsync(TemplateModel template)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> DeleteTemplate(int id)
+    public Task<bool> DeleteTemplateAsync(int id)
     {
         throw new NotImplementedException();
     }
