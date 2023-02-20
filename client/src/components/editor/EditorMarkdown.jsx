@@ -1,7 +1,6 @@
 import React from 'react';
 import {useEffect, useState} from "react";
 import useDebounce from "../hooks/use-debounce";
-import axios from "axios";
 import api from "../../axios-instances";
 
 
@@ -14,7 +13,7 @@ const EditorMarkdown = (props) => {
     //const apiUrl = `${process.env.REACT_APP_BACKEND_ADDRESS}/api`
 
     function sendMarkdown(value) {
-        api.request({
+        api.get('',{
             params:{
                 markdown: mdMarkdown
             }
