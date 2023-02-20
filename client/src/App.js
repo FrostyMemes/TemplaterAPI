@@ -7,6 +7,7 @@ function App() {
     return (
         <div>
             <EditorMarkdown title="Example"/>
+            <input type="button" value="Save to DataBase"/>
         </div>
     );
 }
