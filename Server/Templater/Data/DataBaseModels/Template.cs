@@ -1,5 +1,8 @@
-﻿namespace Templater.Data.DataBaseModels;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Templater.Data.DataBaseModels;
+
+[Table("templates")]
 public class Template
 {
     public Guid Id { get; set; }

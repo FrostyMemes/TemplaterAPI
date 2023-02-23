@@ -1,6 +1,8 @@
-﻿namespace Templater.Data.DataBaseModels;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Templater.Data.DataBaseModels;
 
+[Table("users")]
 [Index(nameof(Email),IsUnique = true)]
 public class User
 {
@@ -9,7 +11,7 @@ public class User
     public string Username { get; set; }
     public string Email { get; set; }
     
-    public string Password { get; set; }
+    public string HashedPassword  { get; set; }
 
     public ICollection<Template> Templates { get; set; }
 }
