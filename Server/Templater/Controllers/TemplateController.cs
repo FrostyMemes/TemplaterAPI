@@ -1,0 +1,50 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Templater.DTO;
+using Templater.Services.Interfaces;
+
+namespace Templater.Controllers;
+
+[ApiController]
+[Route("api/templates")]
+public class TemplateController : ControllerBase
+{
+    private readonly ITemplateService _templateService;
+
+    public TemplateController(ITemplateService templateService)
+    {
+        _templateService = templateService;
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult<ICollection<Template>>> GetAll()
+    {
+        var templates = await _templateService.GetAllTemplatesAsync();
+        if (templates == null)
+            return NotFound("Templates not found");
+        return Ok(templates);
+        
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<TemplateModel>> Get(string id)
+    {
+        var template = await _templateService.GetTemplateAsync(id);
+        if (template == null)
+            return NotFound("Template not found");
+        return Ok(template);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> Post(TemplateModel templateModel)
+    {
+        var newTemplate = new CreateTemplateDto()
+        {
+            Title = templateModel.Title,
+            Markdown = templateModel.Markdown,
+            Markup = templateModel.Markup,
+            UserId = 1
+        };
+        var template = await _templateService.CreateTemplateAsync(newTemplate);
+        return Ok(new {template.Id, template.Title});
+    }
+}
