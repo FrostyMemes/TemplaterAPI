@@ -1,6 +1,7 @@
 using StackExchange.Redis;
+using Templater.Services;
+using Templater.Services.Interfaces;
 using Templater.Services.MarkdownTemplateService;
-using Templater.Services.Repositories.TemplateRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 var redisConnectionString = builder.Configuration["ConnectionStrings:RedisConnectionString"];
@@ -19,7 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(mySQLConnectionString, ServerVersion.AutoDetect(mySQLConnectionString));
 });
 
-builder.Services.AddScoped<ITemplateRepository, TemplateRepository>();
+builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
