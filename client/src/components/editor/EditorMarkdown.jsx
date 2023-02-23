@@ -13,7 +13,7 @@ const EditorMarkdown = (props) => {
     //const apiUrl = `${process.env.REACT_APP_BACKEND_ADDRESS}/api`
 
     function sendMarkdown(value) {
-        api.get('',{
+        api.get(process.env.REACT_APP_BACKEND_TEMPLATER_ADDRESS,{
             params:{
                 markdown: mdMarkdown
             }
