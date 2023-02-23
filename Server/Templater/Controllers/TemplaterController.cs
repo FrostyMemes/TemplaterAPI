@@ -6,16 +6,14 @@ using Templater.Services.MarkdownTemplateService;
 namespace Templater.Controllers;
 
 [ApiController]
-[Route("api")]
+[Route("api/templater")]
 public class TemplaterController : ControllerBase
 {
     private readonly ITemplateParser _templateParser;
-    private readonly ApplicationDbContext _dbContext;
 
-    public TemplaterController(ITemplateParser templateParser, ApplicationDbContext dbContext)
+    public TemplaterController(ITemplateParser templateParser)
     {
         _templateParser = templateParser;
-        _dbContext = dbContext;
     }
 
     [HttpGet]
@@ -23,14 +21,5 @@ public class TemplaterController : ControllerBase
     {
         var result = await _templateParser.ParseAsync(markdown);
         return result;
-    }
-    
-    [HttpPost]
-    public async Task<ActionResult> Post(TemplateModel templateModel)
-    {
-        return Ok(new
-        {
-            Id = '1'
-        });
     }
 }
