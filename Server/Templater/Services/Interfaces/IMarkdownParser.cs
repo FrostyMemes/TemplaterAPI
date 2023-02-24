@@ -1,6 +1,6 @@
 ﻿namespace Templater.Services.MarkdownTemplateService;
 
-public interface ITemplateParser
+public interface IMarkdownParser
 {
     Task<String> ParseAsync(string markdown);
 }

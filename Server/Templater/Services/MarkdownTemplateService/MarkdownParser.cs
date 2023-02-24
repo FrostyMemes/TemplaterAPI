@@ -9,7 +9,7 @@ using Templater.Services.MarkdownTemplateService.Builder.Patterns.Simples;
 
 namespace Templater.Services.MarkdownTemplateService;
 
-public class TemplateParser: ITemplateParser
+public class MarkdownParser: IMarkdownParser
 {
     static readonly PatternResult VoidResult = new (null, -1);
     

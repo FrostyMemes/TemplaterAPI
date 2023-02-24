@@ -12,7 +12,7 @@ var mySQLConnectionString = builder.Configuration["ConnectionStrings:MySQLConnec
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddScoped<ITemplateParser, TemplateParser>();
+builder.Services.AddScoped<IMarkdownParser, MarkdownParser>();
 //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
