@@ -5,7 +5,7 @@ using Templater.Services.Interfaces;
 namespace Templater.Controllers;
 
 [ApiController]
-[Route("api/templates")]
+[Route("api/[controller]")]
 public class TemplateController : ControllerBase
 {
     private readonly ITemplateService _templateService;
@@ -15,14 +15,13 @@ public class TemplateController : ControllerBase
         _templateService = templateService;
     }
     
-    [HttpGet]
+    [HttpGet("[action]")]
     public async Task<ActionResult<ICollection<Template>>> GetAll()
     {
         var templates = await _templateService.GetAllTemplatesAsync();
         if (templates == null)
             return NotFound("Templates not found");
         return Ok(templates);
-        
     }
     
     [HttpGet("{id}")]
@@ -46,5 +45,38 @@ public class TemplateController : ControllerBase
         };
         var template = await _templateService.CreateTemplateAsync(newTemplate);
         return Ok(new {template.Id, template.Title});
+    }
+
+    [HttpPut("{id}")]
+
+    public async Task<ActionResult> Put(TemplateModel templateModel)
+    {
+        var updateTemplate = new UpdateTemplateDto()
+        {
+            Id = Guid.Parse(templateModel.Id),
+            Title = templateModel.Title,
+            Markdown = templateModel.Markdown,
+            Markup = templateModel.Markup
+        };
+        
+        var template = await _templateService.UpdateTemplateAsync(updateTemplate);
+        if (template == null)
+        {
+            return NotFound("Template isn't exist");
+        }
+        
+        return Ok(new {template.Id, template.Title, template.Markdown, template.Markup});
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(string id)
+    {
+        var template = await _templateService.DeleteTemplateAsync(id);
+        if (template == null)
+        {
+            return NotFound("Template isn't exist");
+        }
+
+        return Ok(new {template.Id, template.Title, template.Markdown, template.Markup});
     }
 }
