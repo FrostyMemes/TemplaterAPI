@@ -19,7 +19,7 @@ public class TemplateService : ITemplateService
 
     public async Task<Template> GetTemplateAsync(string id)
     {
-        return await _dbContext.Templates.FindAsync(id);
+        return await _dbContext.Templates.FindAsync(Guid.Parse(id));
     }
 
     public async Task<Template> CreateTemplateAsync(CreateTemplateDto newTemplate)
@@ -38,7 +38,8 @@ public class TemplateService : ITemplateService
 
     public async Task<Template> UpdateTemplateAsync(UpdateTemplateDto updateTemplate)
     {
-        var template = await _dbContext.Templates.FindAsync(updateTemplate.Id.ToString());
+        // ReSharper disable once HeapView.BoxingAllocation
+        var template = await _dbContext.Templates.FindAsync(updateTemplate.Id);
         if (template != null)
         {
             template.Title = updateTemplate.Title;
@@ -51,7 +52,8 @@ public class TemplateService : ITemplateService
 
     public async Task<Template> DeleteTemplateAsync(string id)
     {
-        var template = await _dbContext.Templates.FindAsync(id);
+        // ReSharper disable once HeapView.BoxingAllocation
+        var template = await _dbContext.Templates.FindAsync(Guid.Parse(id));
         if (template != null)
         {
             _dbContext.Templates.Remove(template);
