@@ -16,13 +16,24 @@
   background-color: #abb2c7;
 }
 
+.render-area{
+  background-color: #b5c2c2;
+}
+
 .input-area> textarea{
   width: 100%;
   height: 100%;
   resize: none;
 }
 
-.render-area{
-  background-color: #b5c2c2;
+.template{
+  display: flex;
+  padding: 20px;
+  margin: 10px;
+  border: 2px solid midnightblue;
+  justify-content: flex-start;
+  align-content: center;
 }
+
+
 

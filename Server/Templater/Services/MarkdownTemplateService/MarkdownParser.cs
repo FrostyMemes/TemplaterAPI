@@ -108,8 +108,8 @@ public class MarkdownParser: IMarkdownParser
 
             foreach (var literal in literals)
             {
-                strHashCode = GetStableHashCode(literal);
-                /*redisValue = await _redis.StringGetAsync(strHashCode);
+                /*strHashCode = GetStableHashCode(literal);
+                redisValue = await _redis.StringGetAsync(strHashCode);
                 if (!String.IsNullOrEmpty(redisValue))
                 {
                     templateHTML.AddText(redisValue);
