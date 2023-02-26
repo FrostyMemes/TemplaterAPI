@@ -27,7 +27,7 @@ public class TemplateController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TemplateModel>> Get(string id)
     {
-        var template = await _templateService.GetTemplateAsync(id);
+        var template = await _templateService.GetTemplateAsync(Guid.Parse(id));
         if (template == null)
             return NotFound("Template not found");
         return Ok(template);
@@ -71,7 +71,7 @@ public class TemplateController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
-        var template = await _templateService.DeleteTemplateAsync(id);
+        var template = await _templateService.DeleteTemplateAsync(Guid.Parse(id));
         if (template == null)
         {
             return NotFound("Template isn't exist");
