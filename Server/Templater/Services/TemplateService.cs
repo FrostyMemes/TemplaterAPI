@@ -12,14 +12,32 @@ public class TemplateService : ITemplateService
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Template>> GetAllTemplatesAsync()
+    public async Task<IEnumerable<ResultTemplateDto>> GetAllTemplatesAsync()
     {
-        return await _dbContext.Templates.ToListAsync();
+        return await _dbContext.Templates
+            .Select(template => new ResultTemplateDto()
+            {
+                Id = template.Id.ToString(),
+                Title = template.Title,
+                Markdown = template.Markdown,
+                Markup = template.Markup
+            })
+            .ToListAsync();
     }
 
-    public async Task<Template> GetTemplateAsync(string id)
+    public async Task<ResultTemplateDto> GetTemplateAsync(Guid id)
     {
-        return await _dbContext.Templates.FindAsync(Guid.Parse(id));
+        #pragma warning disable CS8603
+        return await _dbContext.Templates
+            .Where(template => template.Id == id)
+            .Select(template => new ResultTemplateDto()
+            {
+                Id = template.Id.ToString(),
+                Title = template.Title,
+                Markdown = template.Markdown,
+                Markup = template.Markup
+            })
+            .FirstOrDefaultAsync();
     }
 
     public async Task<Template> CreateTemplateAsync(CreateTemplateDto newTemplate)
@@ -50,16 +68,15 @@ public class TemplateService : ITemplateService
         return template;
     }
 
-    public async Task<Template> DeleteTemplateAsync(string id)
+    public async Task<Template> DeleteTemplateAsync(Guid id)
     {
         // ReSharper disable once HeapView.BoxingAllocation
-        var template = await _dbContext.Templates.FindAsync(Guid.Parse(id));
+        var template = await _dbContext.Templates.FindAsync(id);
         if (template != null)
         {
             _dbContext.Templates.Remove(template);
             await _dbContext.SaveChangesAsync();
         }
         return template;
-   
     }
 }
