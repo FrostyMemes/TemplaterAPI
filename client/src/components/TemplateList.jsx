@@ -1,13 +1,14 @@
-import React, {Component} from 'react';
+import React from 'react';
+import TemplateItem from "./TemplateItem";
 
-class TemplateList extends Component {
-    render() {
-        return (
-            <div>
-                
-            </div>
-        );
-    }
+const TemplateList = (props) => {
+    return (
+        <div className="template__list">
+            {props.templateList.map(template =>
+                <TemplateItem template={template} key={template.id}/>
+            )}
+        </div>
+    );
 }
 
 export default TemplateList;
