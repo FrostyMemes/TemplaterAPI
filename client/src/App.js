@@ -1,13 +1,10 @@
 import './App.css';
-import EditorMarkdown from './components/editor/EditorMarkdown'
+import Editor from './components/editor/Editor'
 
 function App() {
-
-
-
     return (
         <div>
-            <EditorMarkdown/>
+            <Editor/>
         </div>
     );
 }
