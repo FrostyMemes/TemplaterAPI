@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lD+IKxf63ZXbh+chM3ifR7C7bVkykLbwZfa08aIiFEzvu9P3HdvVXOvTd2ebvsSexpW+pgFiVAhtV/5iz56zSA==",
+  "dgSpecHash": "A5rSYdPSbm5p8sVvwWK24wVINC/Mpblq1f8nmrqMbMN6NgXCmfIyYm5c/sCEAsj6S2rh9i9Ebl02Y+ZPz3m4DA==",
   "success": true,
-  "projectFilePath": "D:\\Projects\\TemplaterAPI\\Server\\Templater\\Templater.csproj",
+  "projectFilePath": "D:\\Projects\\C Sharp Projects\\TemplaterAPI\\Server\\Templater\\Templater.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\anato\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\anato\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.0\\microsoft.aspnetcore.openapi.7.0.0.nupkg.sha512",
