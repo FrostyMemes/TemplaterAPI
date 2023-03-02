@@ -1,5 +1,5 @@
 import React from 'react';
-import api from "../axios-instances";
+import api from "../http";
 
 const TemplateItem = (props) => {
 
