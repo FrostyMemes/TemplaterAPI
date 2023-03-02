@@ -1,9 +1,10 @@
 import React from 'react';
-import api from "../../axios-instances";
+import api from "../../http";
 import {useEffect, useState} from "react";
 import useDebounce from "../hooks/use-debounce";
 import EditorMarkdownArea from "./EditorMarkdownArea";
 import TemplateList from "../TemplateList";
+import * as TemplateService from "../../services/TemplateService"
 
 const Editor = (props) => {
 
@@ -13,8 +14,9 @@ const Editor = (props) => {
     const [mdTitle, setTitle] = useState('')
 
     const debouncedSearchTerm = useDebounce(mdMarkdown, 700);
+
     const renderTemplate = (markdown) => {
-        api.get(process.env.REACT_APP_BACKEND_MARKDOWN_ADDRESS, {
+        api.get('markdown', {
             params: {
                 markdown: markdown
             }
@@ -22,32 +24,33 @@ const Editor = (props) => {
             .then(response => setRender(response.data))
             .catch(error => setRender(error.message))
     }
+
     const saveTemplate = () => {
-        api.post(`${process.env.REACT_APP_BACKEND_TEMPLATE_ADDRESS}`,
-            {
-                title: mdTitle,
-                markdown: mdMarkdown,
-                markup: mdRender
-            })
+        TemplateService.saveTemplate({
+            title: mdTitle,
+            markdown: mdMarkdown,
+            markup: mdRender
+        })
             .then(response => {
-                console.log(response.data)
-                setTemplates([...templates, response.data])
-            })
+            console.log(response.data)
+            setTemplates([...templates, response.data])
+        })
             .catch(error => console.log(error.message))
     }
 
     useEffect(() => {
-            api.get(`${process.env.REACT_APP_BACKEND_TEMPLATE_ADDRESS}/getall`)
-                .then(response => {setTemplates(response.data)})
-                .catch(error => console.log(error.message))
-        }, [])
+        TemplateService.getAllTemplates()
+            .then(response => {setTemplates(response.data)})
+            .catch(error => console.log(error.message))
+    }, [])
+
     useEffect(() => {
-            if (debouncedSearchTerm) {
-                renderTemplate(debouncedSearchTerm)
-            } else {
-                setRender('');
-            }
-        }, [debouncedSearchTerm])
+        if (debouncedSearchTerm) {
+            renderTemplate(debouncedSearchTerm)
+        } else {
+            setRender('');
+        }
+    }, [debouncedSearchTerm])
 
     return (
         <div className="editor">
