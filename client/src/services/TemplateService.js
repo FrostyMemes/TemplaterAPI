@@ -14,7 +14,7 @@ export function saveTemplate(template) {
     return api.post(serviceUrl, template)
 }
 
-export function DeleteTemplate(id) {
+export function deleteTemplate(id) {
     return api.delete(`${serviceUrl}/${id}`)
 }
 
