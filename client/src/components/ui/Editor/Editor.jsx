@@ -1,14 +1,20 @@
 import React from 'react';
-import api from "../../http";
+import api from "../../../http";
 import {useEffect, useState} from "react";
-import useDebounce from "../hooks/use-debounce";
+import {useSelector, useDispatch} from "react-redux";
+import {addTemplate, getAllTemplates, removeTemplate} from "../../../store/templateSlice";
+import useDebounce from "../../hooks/use-debounce";
 import EditorMarkdownArea from "./EditorMarkdownArea";
-import TemplateList from "../TemplateList";
-import * as TemplateService from "../../services/TemplateService"
+import TemplateList from "../TemplateList/TemplateList";
+import {SendMarkdown} from "../../../services/MarkdownService";
+import * as TemplateService from "../../../services/TemplateService"
 
-const Editor = (props) => {
+const Editor = () => {
 
-    const [templates, setTemplates] = useState([])
+    const templates = useSelector(state => state.templates.templates)
+    const dispatch = useDispatch()
+
+    const [templatess, setTemplates] = useState([])
     const [mdMarkdown, setMarkdown] = useState('')
     const [mdRender, setRender] = useState('')
     const [mdTitle, setTitle] = useState('')
@@ -16,11 +22,7 @@ const Editor = (props) => {
     const debouncedSearchTerm = useDebounce(mdMarkdown, 700);
 
     const renderTemplate = (markdown) => {
-        api.get('markdown', {
-            params: {
-                markdown: markdown
-            }
-        })
+        SendMarkdown(markdown)
             .then(response => setRender(response.data))
             .catch(error => setRender(error.message))
     }
@@ -33,20 +35,30 @@ const Editor = (props) => {
         })
             .then(response => {
             console.log(response.data)
-            setTemplates([...templates, response.data])
+            dispatch(addTemplate(response.data))
         })
             .catch(error => console.log(error.message))
     }
 
+    const deleteTemplate = (id) =>{
+        TemplateService.deleteTemplate(id)
+            .then(response => {
+                console.log(response.data)
+                dispatch(removeTemplate(response.data))})
+            .catch(error => console.log(error.message))
+
+    }
+
     useEffect(() => {
+        //dispatch(getAllTemplates(1))
         TemplateService.getAllTemplates()
-            .then(response => {setTemplates(response.data)})
+            .then(response => {dispatch(getAllTemplates(response.data))})
             .catch(error => console.log(error.message))
     }, [])
 
     useEffect(() => {
         if (debouncedSearchTerm) {
-            renderTemplate(debouncedSearchTerm)
+            renderTemplate(mdMarkdown)
         } else {
             setRender('');
         }
@@ -60,7 +72,9 @@ const Editor = (props) => {
                 onChange={markdown => setMarkdown(markdown)}
                 render={mdRender}/>
             <input type="button" onClick={saveTemplate} value="Save"/>
-            <TemplateList templateList={templates}/>
+            <TemplateList
+                templateList={templates}
+                onDelete={id => deleteTemplate(id)}/>
         </div>
     );
 };
