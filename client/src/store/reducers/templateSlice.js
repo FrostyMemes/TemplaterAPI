@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import * as TemplateService from "../services/TemplateService";
+import * as TemplateService from "../../services/TemplateService";
 
 const templateSlice = createSlice({
     name: 'templates',
