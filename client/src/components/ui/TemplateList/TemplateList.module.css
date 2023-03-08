@@ -1,0 +1,29 @@
+.templateList{
+    display: block;
+    position: fixed;
+    overflow-y:auto;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    height: 100%;
+    width: 18%;
+    color: white;
+    background-color: #185abd;
+}
+
+.templateItem{
+    cursor: default;
+    height: auto;
+    width: 100%;
+}
+
+.templateContent{
+    font-size: 17px;
+    padding: 2% 3%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.templateContent:hover{
+    background-color: #134388;
+}
