@@ -1,20 +1,18 @@
 import React from 'react';
-import api from "../../../http";
 import {useEffect, useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {addTemplate, getAllTemplates, removeTemplate} from "../../../store/templateSlice";
 import useDebounce from "../../hooks/use-debounce";
 import EditorMarkdownArea from "./EditorMarkdownArea";
 import TemplateList from "../TemplateList/TemplateList";
 import {SendMarkdown} from "../../../services/MarkdownService";
-import * as TemplateService from "../../../services/TemplateService"
+import {fetchTemplates, saveTemplate, deleteTemplate} from "../../../store/reducers/TemplateActions";
+
 
 const Editor = () => {
 
     const templates = useSelector(state => state.templates.templates)
     const dispatch = useDispatch()
 
-    const [templatess, setTemplates] = useState([])
     const [mdMarkdown, setMarkdown] = useState('')
     const [mdRender, setRender] = useState('')
     const [mdTitle, setTitle] = useState('')
@@ -27,33 +25,21 @@ const Editor = () => {
             .catch(error => setRender(error.message))
     }
 
-    const saveTemplate = () => {
-        TemplateService.saveTemplate({
-            title: mdTitle,
-            markdown: mdMarkdown,
-            markup: mdRender
-        })
-            .then(response => {
-            console.log(response.data)
-            dispatch(addTemplate(response.data))
-        })
-            .catch(error => console.log(error.message))
+    const addTemplate = () => {
+        dispatch(saveTemplate({
+                title: mdTitle,
+                markdown: mdMarkdown,
+                markup: mdRender
+            })
+        )
     }
 
-    const deleteTemplate = (id) =>{
-        TemplateService.deleteTemplate(id)
-            .then(response => {
-                console.log(response.data)
-                dispatch(removeTemplate(response.data))})
-            .catch(error => console.log(error.message))
-
+    const removeTemplate = (id) => {
+        dispatch(deleteTemplate(id))
     }
 
     useEffect(() => {
-        //dispatch(getAllTemplates(1))
-        TemplateService.getAllTemplates()
-            .then(response => {dispatch(getAllTemplates(response.data))})
-            .catch(error => console.log(error.message))
+        dispatch(fetchTemplates())
     }, [])
 
     useEffect(() => {
@@ -71,10 +57,10 @@ const Editor = () => {
             <EditorMarkdownArea
                 onChange={markdown => setMarkdown(markdown)}
                 render={mdRender}/>
-            <input type="button" onClick={saveTemplate} value="Save"/>
+            <input type="button" onClick={addTemplate} value="Save"/>
             <TemplateList
                 templateList={templates}
-                onDelete={id => deleteTemplate(id)}/>
+                onDelete={id => removeTemplate(id)}/>
         </div>
     );
 };
