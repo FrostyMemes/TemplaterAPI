@@ -1,10 +1,8 @@
 import React from 'react';
 
-const EditorRenderArea = () => {
+const EditorRenderArea = ({render}) => {
     return (
-        <div>
-            
-        </div>
+        <div className="render-area" dangerouslySetInnerHTML={{__html: render}}></div>
     );
 };
 

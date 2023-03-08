@@ -6,6 +6,7 @@ import EditorMarkdownArea from "./EditorMarkdownArea";
 import TemplateList from "../TemplateList/TemplateList";
 import {SendMarkdown} from "../../../services/MarkdownService";
 import {fetchTemplates, saveTemplate, deleteTemplate} from "../../../store/reducers/TemplateActions";
+import EditorRenderArea from "./EditorRenderArea";
 
 
 const Editor = () => {
@@ -54,13 +55,15 @@ const Editor = () => {
         <div className="editor">
             <h1>{mdTitle}</h1>
             <input onChange={(e) => setTitle(e.target.value)}/>
-            <EditorMarkdownArea
-                onChange={markdown => setMarkdown(markdown)}
-                render={mdRender}/>
+            <div className="editor-area">
+                <EditorMarkdownArea onChange={markdown => setMarkdown(markdown)}/>
+                <EditorRenderArea render={mdRender}/>
+            </div>
             <input type="button" onClick={addTemplate} value="Save"/>
             <TemplateList
                 templateList={templates}
                 onDelete={id => removeTemplate(id)}/>
+
         </div>
     );
 };
