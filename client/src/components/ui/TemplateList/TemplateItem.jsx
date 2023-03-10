@@ -1,19 +1,12 @@
 import React from 'react';
-import api from "../../../http";
+import classes from "./TemplateList.module.css";
 
-const TemplateItem = (props) => {
 
+const TemplateItem = ({template}) => {
     return (
-        <div className="template">
-            <div className="template__content">
-                <strong>{props.template.title}</strong>
-                <div>
-                    {props.template.id}
-                </div>
-            </div>
-            <div>
-                <input type="button" onClick={(e) => props.onDelete(props.template.id)} value="Удалить запись"/>
-                <input type="button" value="Обновить запись"/>
+        <div className={classes.templateItem}>
+            <div className={classes.templateContent}>
+                {template.title}
             </div>
         </div>
     );

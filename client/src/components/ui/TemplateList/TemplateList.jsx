@@ -1,11 +1,12 @@
 import React from 'react';
 import TemplateItem from "./TemplateItem";
+import classes from "./TemplateList.module.css"
 
 const TemplateList = (props) => {
     return (
-        <div className="template__list">
+        <div className={classes.templateList}>
             {props.templateList.map(template =>
-                <TemplateItem template={template} key={template.id} onDelete={props.onDelete}/>
+                <TemplateItem template={template} key={template.id}/>
             )}
         </div>
     );
