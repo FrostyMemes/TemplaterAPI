@@ -156,3 +156,7 @@ D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Mono.TextTemplating.d
 D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\MySqlConnector.dll
 D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Pomelo.EntityFrameworkCore.MySql.dll
 D:\Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\System.CodeDom.dll
+D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\DocumentFormat.OpenXml.dll
+D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\Newtonsoft.Json.dll
+D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\System.IO.Packaging.dll
+D:\Projects\C Sharp Projects\TemplaterAPI\Server\Templater\bin\Debug\net7.0\TemplateEngine.Docx.dll

@@ -1,11 +1,10 @@
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using StackExchange.Redis;
 using Templater.Services.MarkdownTemplateService.Builder;
 using Templater.Services.MarkdownTemplateService.Builder.Patterns;
-using Templater.Services.MarkdownTemplateService.Builder.Patterns.Combinators;
 using Templater.Services.MarkdownTemplateService.Builder.Patterns.Simples;
+using Templater.Services.MarkdownTemplateService.Builder.Patterns.Combinators;
 
 namespace Templater.Services.MarkdownTemplateService;
 
