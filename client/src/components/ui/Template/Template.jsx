@@ -8,7 +8,7 @@ const Template = () => {
 
     return (
         <div className={classes.template}>
-            {template && <div dangerouslySetInnerHTML={{__html: template.markup}}></div>}
+            <div dangerouslySetInnerHTML={{__html: template?.markup}}></div>
         </div>
     );
 };
