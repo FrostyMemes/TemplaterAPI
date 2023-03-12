@@ -7,18 +7,18 @@ import Editor from "./components/ui/Editor/Editor";
 import Template from "./components/ui/Template/Template";
 
 function App() {
-    // const templates = useSelector(state => state.templates.templates)
-    // const dispatch = useDispatch()
-    //
-    // useEffect(() => {
-    //     dispatch(fetchTemplates())
-    // }, [])
+    const templates = useSelector(state => state.templates.templates)
+    const dispatch = useDispatch()
 
-    const [templates, setTemplates] = useState([
-        {id: 1, title: "Template1"},
-        {id: 2, title: "Template2"},
-        {id: 3, title: "Template3"},
-    ])
+    useEffect(() => {
+        dispatch(fetchTemplates())
+    }, [])
+
+    // const [templates, setTemplates] = useState([
+    //     {id: 1, title: "Template1", markup:"loh loh"},
+    //     {id: 2, title: "Template2", markup:"e e"},
+    //     {id: 3, title: "Template3", markup:"s s"},
+    // ])
 
     return (
         <div className="workspace">
