@@ -254,8 +254,9 @@ public class MarkdownParser: IMarkdownParser
         }
     }
 
-    private void AddTextInputTag(TemplateBuilder builder, string literalKey, string title, string content)
+    private string AddTextInputTag(string literalKey, string title, string content)
     {
+        TemplateBuilder builder = new();
         builder
             .AddTag("label")
             .AddText(title)
@@ -266,10 +267,13 @@ public class MarkdownParser: IMarkdownParser
             .AddAttribute("placeholder", title)
             .AddAttribute("value", content)
             .AddTag("/label");
+        
+        return builder.Build();
     }
 
-    private void AddTextareaTag(TemplateBuilder builder, string literalKey, string title, string content)
+    private string AddTextareaTag(string literalKey, string title, string content)
     {
+        TemplateBuilder builder = new();
         builder
             .AddTag("label")
             .AddText(title)
@@ -279,6 +283,8 @@ public class MarkdownParser: IMarkdownParser
             .AddAttribute("placeholder", title)
             .AddText(content)
             .AddTag("/label");
+        
+        return builder.Build();
     }
 
     private void AddSelectTag(TemplateBuilder builder, string literalKey, string title, string content)
