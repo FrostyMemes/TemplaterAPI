@@ -85,6 +85,7 @@ public class MarkdownParser: IMarkdownParser
         {"checkbox", "template-checkbox"},
     };
 
+    private readonly TemplateBuilder _builder;
     /*private readonly IDatabase _redis;
     
     public TemplateParser(IConnectionMultiplexer muxer)
