@@ -74,6 +74,16 @@ public class MarkdownParser: IMarkdownParser
         {"radio", new Pattern[]{ptrRoundBraceArea, ptrRoundBraceContent}},
         {"checkbox", new Pattern[]{ptrSquareBraceArea, ptrSquareBraceContent}}
     };
+    
+    public static readonly Dictionary<string, string> tagClassNames = new ()
+    {
+        {"form", "template-form"},
+        {"input", "template-input"},
+        {"textarea", "template-textarea"},
+        {"select", "template-select"},
+        {"radio", "template-radio"},
+        {"checkbox", "template-checkbox"},
+    };
 
     /*private readonly IDatabase _redis;
     
@@ -95,8 +105,7 @@ public class MarkdownParser: IMarkdownParser
         string[] options = null;
         int id = 0;
         
-        templateHTML.AddTag("form").AddAttribute("class", "templateForm");
-
+        templateHTML.AddTag("form").AddAttribute("class", tagClassNames["form"]);
         try
         {
             var literals = markdown
@@ -116,26 +125,18 @@ public class MarkdownParser: IMarkdownParser
                 }*/
                 
                 literalParts = literal.Split(':');
-                literalKey = literalParts[0].Trim();
+                literalKey = Guid.NewGuid().ToString();
+                title = literalParts[0].Trim();
                 litrealBody = literalParts[1].Trim();
                 
-                if (keys.Contains(literalKey))
-                    throw new KeyExistingException($"The key ${literalKey} already exist");
-
-                content.Clear();
-                tempBuilder.Clear();
-                
-                tempBuilder.AddTag("div");
-                
-                var classDiv = ptrRoundBraceContent.Execute(literalKey, 0);
-                if (!IsNull(classDiv?.Result))
-                {
-                    tempBuilder.AddAttribute("class", classDiv.Result);
-                    literalKey = Regex.Replace(literalKey, @"\((.*)\)", "").Trim();
-                }
+                if (keys.Contains(title))
+                    throw new KeyExistingException($"The key ${title} already exist");
                 
                 keys.Append(literalKey);
-                title = literalKey;
+                
+                content.Clear();
+                tempBuilder.Clear();
+                tempBuilder.AddTag("div");
 
                 if (!IsNull(ptrMarksArea.Execute(litrealBody, 0)?.Result))
                 {
@@ -252,7 +253,44 @@ public class MarkdownParser: IMarkdownParser
             return tempBuilder.Build();
         }
     }
-    
+
+    private void AddTextInputTag(TemplateBuilder builder, string literalKey, string title, string content)
+    {
+        builder
+            .AddTag("label")
+            .AddText(title)
+            .AddTag("input")
+            .AddAttribute("type", "text")
+            .AddAttribute("name", literalKey)
+            .AddAttribute("id", literalKey)
+            .AddAttribute("placeholder", title)
+            .AddAttribute("value", content)
+            .AddTag("/label");
+    }
+
+    private void AddTextareaTag(TemplateBuilder builder, string literalKey, string title, string content)
+    {
+        builder
+            .AddTag("label")
+            .AddText(title)
+            .AddTag("textarea")
+            .AddAttribute("name", literalKey)
+            .AddAttribute("id", literalKey)
+            .AddAttribute("placeholder", title)
+            .AddText(content)
+            .AddTag("/label");
+    }
+
+    private void AddSelectTag(TemplateBuilder builder, string literalKey, string title, string content)
+    {
+        
+    }
+
+    private void AddEnumTag(TemplateBuilder builder, string tag)
+    {
+        var i = 1;
+    }
+
     private bool IsNull(object? value)
     {
         return value == null;
