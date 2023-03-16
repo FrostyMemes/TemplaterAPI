@@ -83,6 +83,7 @@ public class MarkdownParser: IMarkdownParser
         {"select", "template-select"},
         {"radio", "template-radio"},
         {"checkbox", "template-checkbox"},
+        {"button", "template-button"},
     };
 
     /*private readonly IDatabase _redis;
@@ -201,15 +202,12 @@ public class MarkdownParser: IMarkdownParser
         return builder
             .AddTag("div")
             .AddAttribute("class", tagClassNames["input"])
-            .AddTag("label")
-            .AddText(literalKey)
             .AddTag("input")
             .AddAttribute("type", "text")
             .AddAttribute("name", id)
             .AddAttribute("id", id)
             .AddAttribute("placeholder", literalKey)
             .AddAttribute("value", content)
-            .AddTag("/label")
             .AddTag("/div")
             .Build();
     }
@@ -220,14 +218,11 @@ public class MarkdownParser: IMarkdownParser
         return builder
             .AddTag("div")
             .AddAttribute("class", tagClassNames["textarea"])
-            .AddTag("label")
-            .AddText(literalKey)
             .AddTag("textarea")
             .AddAttribute("name", id)
             .AddAttribute("id", id)
             .AddAttribute("placeholder", literalKey)
             .AddText(content)
-            .AddTag("/label")
             .AddTag("/div")
             .Build();
     }
