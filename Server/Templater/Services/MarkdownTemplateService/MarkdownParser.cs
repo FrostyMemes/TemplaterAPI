@@ -1,11 +1,10 @@
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using StackExchange.Redis;
 using Templater.Services.MarkdownTemplateService.Builder;
 using Templater.Services.MarkdownTemplateService.Builder.Patterns;
-using Templater.Services.MarkdownTemplateService.Builder.Patterns.Combinators;
 using Templater.Services.MarkdownTemplateService.Builder.Patterns.Simples;
+using Templater.Services.MarkdownTemplateService.Builder.Patterns.Combinators;
 
 namespace Templater.Services.MarkdownTemplateService;
 
@@ -75,6 +74,17 @@ public class MarkdownParser: IMarkdownParser
         {"radio", new Pattern[]{ptrRoundBraceArea, ptrRoundBraceContent}},
         {"checkbox", new Pattern[]{ptrSquareBraceArea, ptrSquareBraceContent}}
     };
+    
+    public static readonly Dictionary<string, string> tagClassNames = new ()
+    {
+        {"form", "template-form"},
+        {"input", "template-input"},
+        {"textarea", "template-textarea"},
+        {"select", "template-select"},
+        {"radio", "template-radio"},
+        {"checkbox", "template-checkbox"},
+        {"button", "template-button"},
+    };
 
     /*private readonly IDatabase _redis;
     
@@ -86,18 +96,17 @@ public class MarkdownParser: IMarkdownParser
     public async Task<string> ParseAsync(string markdown)
     {
         TemplateBuilder templateHTML = new();
-        TemplateBuilder tempBuilder = new();
+        StringBuilder render = new();
         StringBuilder content = new();
         List<string> keys = new();
-        string tag, type, title, text;
+        string tag, type, text, id;
         string literalKey, litrealBody;
         string redisValue, strHashCode;
         string[] literalParts = null;
         string[] options = null;
-        int id = 0;
+    
         
-        templateHTML.AddTag("form").AddAttribute("class", "templateForm");
-
+        templateHTML.AddTag("form").AddAttribute("class", tagClassNames["form"]);
         try
         {
             var literals = markdown
@@ -117,26 +126,18 @@ public class MarkdownParser: IMarkdownParser
                 }*/
                 
                 literalParts = literal.Split(':');
+                
                 literalKey = literalParts[0].Trim();
                 litrealBody = literalParts[1].Trim();
                 
                 if (keys.Contains(literalKey))
                     throw new KeyExistingException($"The key ${literalKey} already exist");
+                
+                keys.Add(literalKey);
+                id = Guid.NewGuid().ToString();
 
+                render.Clear();
                 content.Clear();
-                tempBuilder.Clear();
-                
-                tempBuilder.AddTag("div");
-                
-                var classDiv = ptrRoundBraceContent.Execute(literalKey, 0);
-                if (!IsNull(classDiv?.Result))
-                {
-                    tempBuilder.AddAttribute("class", classDiv.Result);
-                    literalKey = Regex.Replace(literalKey, @"\((.*)\)", "").Trim();
-                }
-                
-                keys.Append(literalKey);
-                title = literalKey;
 
                 if (!IsNull(ptrMarksArea.Execute(litrealBody, 0)?.Result))
                 {
@@ -148,19 +149,10 @@ public class MarkdownParser: IMarkdownParser
                         text = ptrMarksContent.Execute(match.Value, 0).Result;
                         content.Append(string.IsNullOrEmpty(text) ? "\n" : $"{text}\n");
                     }
-
-                    tempBuilder
-                        .AddTag(tag)
-                        .AddAttribute("name", literalKey)
-                        .AddAttribute("id", literalKey)
-                        .AddAttribute("placeholder", title)
-                        .AddText(tag == "input"
-                            ? $" value={content}>"
-                            : $"{content} </{tag}>")
-                        .AddTag("label")
-                        .AddAttribute("for", literalKey)
-                        .AddText(title)
-                        .AddTag("/label");
+                    
+                    render.Append(tag.Equals("input") 
+                        ? RenderTextInputTag(literalKey, id, content.ToString()) 
+                        : RenderTextareaTag(literalKey, id, content.ToString()));
                 }
                 else
                 {
@@ -172,68 +164,18 @@ public class MarkdownParser: IMarkdownParser
 
                     if (!IsNull(ptrVerticalBraceArea.Execute(options[0], 0).Result))
                     {
-                        tempBuilder
-                            .AddTag("label")
-                            .AddAttribute("for", literalKey)
-                            .AddText(title)
-                            .AddTag("/label")
-                            .AddTag("select")
-                            .AddAttribute("name", literalKey)
-                            .AddAttribute("id", literalKey)
-                            .AddAttribute("aria-label", literalKey);
-
-                        foreach (var option in options) 
-                        {
-                            if (!IsNull(ptrVerticalBraceArea.Execute(option, 0)?.Result))
-                            {
-                                var optionTemplate = ptrVerticalBraceContent.Execute(option, 0);
-                                tempBuilder
-                                    .AddTag("option")
-                                    .AddAttribute("value", optionTemplate.Result)
-                                    .AddText(optionTemplate.Result)
-                                    .AddTag("/option");
-                            }
-                        }
-                        tempBuilder.AddTag("/select");
+                        render.Append(RenderSelectTag(literalKey, id, options));
                     }
                     else
                     {
-                        id = 1;
                         type = IsNull(ptrRoundBraceArea.Execute(options[0], 0).Result)
                             ? "checkbox"
                             : "radio";
-
-                        foreach (var option in options)
-                        {
-                            if (!IsNull(ptrEnumTags[type][0].Execute(option, 0).Result))
-                            {
-                                var temp = ptrEnumTags[type][1].Execute(option, 0);
-
-                                var check = string.IsNullOrEmpty(temp.Result)
-                                    ? string.Empty
-                                    : "checked";
-
-                                var optionLabel = option
-                                    .Substring(temp.EndPosition + 1)
-                                    .Trim();
-
-                                tempBuilder
-                                    .AddTag("input")
-                                    .AddAttribute("type", type)
-                                    .AddAttribute("id", $"{id}")
-                                    .AddAttribute("name", literalKey)
-                                    .AddAttribute(check)
-                                    .AddTag("/input")
-                                    .AddTag("label")
-                                    .AddAttribute("for", $"{id}")
-                                    .AddText(optionLabel)
-                                    .AddTag("/label");
-                                id++;
-                            }
-                        }
+                        
+                        render.Append(RenderEnumTag(type, literalKey, id, options));
                     }
                 }
-                templateHTML.AddText(tempBuilder.AddTag("/div").Build());
+                templateHTML.AddText(render.ToString());
                 /*await _redis.StringAppendAsync(strHashCode,tempBuilder.Build());
                 await _redis.KeyExpireAsync(strHashCode, TimeSpan.FromSeconds(1800));*/
             }
@@ -242,23 +184,118 @@ public class MarkdownParser: IMarkdownParser
         }
         catch (Exception e)
         {
-            tempBuilder.Clear();
-            tempBuilder
+            templateHTML.Clear();
+            templateHTML
                 .AddTag("div")
                 .AddAttribute("class", "alert alert-danger")
                 .AddAttribute("role", "alert")
                 .AddText(e.Message)
                 .AddTag("/div");
 
-            return tempBuilder.Build();
+            return templateHTML.Build();
         }
     }
-    
-    private bool IsNull(object? value)
+
+    private string RenderTextInputTag(string literalKey, string id, string content)
     {
-        return value == null;
+        TemplateBuilder builder = new();
+        return builder
+            .AddTag("div")
+            .AddAttribute("class", tagClassNames["input"])
+            .AddTag("input")
+            .AddAttribute("type", "text")
+            .AddAttribute("name", id)
+            .AddAttribute("id", id)
+            .AddAttribute("placeholder", literalKey)
+            .AddAttribute("value", content)
+            .AddTag("/div")
+            .Build();
     }
-    
+
+    private string RenderTextareaTag(string literalKey, string id, string content)
+    {
+        TemplateBuilder builder = new();
+        return builder
+            .AddTag("div")
+            .AddAttribute("class", tagClassNames["textarea"])
+            .AddTag("textarea")
+            .AddAttribute("name", id)
+            .AddAttribute("id", id)
+            .AddAttribute("placeholder", literalKey)
+            .AddText(content)
+            .AddTag("/div")
+            .Build();
+    }
+
+    private string RenderSelectTag(string literalKey, string id, string[] options)
+    {
+        TemplateBuilder builder = new();
+        builder
+            .AddTag("div")
+            .AddAttribute("class", tagClassNames["select"])
+            .AddTag("label")
+            .AddAttribute("for", id)
+            .AddText(literalKey)
+            .AddTag("/label")
+            .AddTag("select")
+            .AddAttribute("name", id)
+            .AddAttribute("id", id)
+            .AddAttribute("aria-label", literalKey);
+
+        foreach (var option in options) 
+        {
+            if (!IsNull(ptrVerticalBraceArea.Execute(option, 0)?.Result))
+            {
+                var optionTemplate = ptrVerticalBraceContent.Execute(option, 0);
+                builder
+                    .AddTag("option")
+                    .AddAttribute("value", optionTemplate.Result)
+                    .AddText(optionTemplate.Result)
+                    .AddTag("/option");
+            }
+        }
+        return builder
+            .AddTag("/select")
+            .AddTag("/div")
+            .Build();
+    }
+
+    private string RenderEnumTag(string type, string literalKey, string id, string[] options)
+    {
+        TemplateBuilder builder = new();
+        var num = 1;
+        builder.AddTag("div").AddAttribute("class", tagClassNames[type]);
+        foreach (var option in options)
+        {
+            if (!IsNull(ptrEnumTags[type][0].Execute(option, 0).Result))
+            {
+                var temp = ptrEnumTags[type][1].Execute(option, 0);
+                
+                var check = string.IsNullOrEmpty(temp.Result)
+                    ? string.Empty
+                    : "checked";
+
+                var optionLabel = option
+                    .Substring(temp.EndPosition + 1)
+                    .Trim();
+
+                builder
+                    .AddTag("input")
+                    .AddAttribute("type", type)
+                    .AddAttribute("id", $"{num}")
+                    .AddAttribute("name", literalKey)
+                    .AddAttribute(check)
+                    .AddTag("/input")
+                    .AddTag("label")
+                    .AddAttribute("for", $"{num}")
+                    .AddText(optionLabel)
+                    .AddTag("/label");
+                num++;
+            }
+        }
+        return builder.AddTag("/div").Build();
+    }
+
     private string GetStableHashCode(string str)
     {
         unchecked
@@ -276,6 +313,11 @@ public class MarkdownParser: IMarkdownParser
 
             return (hash1 + (hash2*1566083941)).ToString();
         }
+    }
+    
+    private bool IsNull(object? value)
+    {
+        return value == null;
     }
     
     private class KeyExistingException : Exception

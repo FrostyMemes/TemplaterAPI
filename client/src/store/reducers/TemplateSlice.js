@@ -9,6 +9,7 @@ const templateSlice = createSlice({
     name: 'templates',
     initialState:{
         templates:[],
+        currentTemplate: null,
         isLoading: false,
         error: null
     },
@@ -24,6 +25,8 @@ const templateSlice = createSlice({
         [fetchTemplates.fulfilled]: (state, action) => {
             state.templates = action.payload
             state.status = false
+            if (state.templates.length > 0)
+                state.currentTemplate = state.templates[0]
         },
         [fetchTemplates.rejected]: (state, action) => {
             state.status = false
@@ -34,7 +37,6 @@ const templateSlice = createSlice({
 
         },
         [saveTemplate.fulfilled]:(state, action) => {
-            console.log(action.payload)
             state.templates.push(action.payload)
         },
         [saveTemplate.rejected]:(state, action) => {
