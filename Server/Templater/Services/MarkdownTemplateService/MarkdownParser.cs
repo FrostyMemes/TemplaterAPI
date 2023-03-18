@@ -84,6 +84,7 @@ public class MarkdownParser: IMarkdownParser
         {"radio", "template-radio"},
         {"checkbox", "template-checkbox"},
         {"button", "template-button"},
+        {"label", "template-label"}
     };
 
     /*private readonly IDatabase _redis;
