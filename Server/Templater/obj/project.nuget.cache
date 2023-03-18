@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WYDNhwIg6dhJDCHfmgg5VHrnU1l0E60R5bU6M/Wn2UKFzoCenxujELp2bI0LdUF5GcsNGdOaQ6rX+22HKq5ppg==",
+  "dgSpecHash": "rRdmx7oDiE6PxxAxQqPyOzaArDd4HJZ63kFXyVYXZuotSl4jMlqr/Y12lJx0HtO6bDHo3/UT+DLILAEEka2c2w==",
   "success": true,
-  "projectFilePath": "D:\\Projects\\C Sharp Projects\\TemplaterAPI\\Server\\Templater\\Templater.csproj",
+  "projectFilePath": "D:\\Projects\\TemplaterAPI\\Server\\Templater\\Templater.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\anato\\.nuget\\packages\\documentformat.openxml\\2.7.2\\documentformat.openxml.2.7.2.nupkg.sha512",
     "C:\\Users\\anato\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
