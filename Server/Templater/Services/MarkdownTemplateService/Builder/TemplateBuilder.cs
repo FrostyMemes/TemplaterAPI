@@ -6,8 +6,8 @@ public class TemplateBuilder
 {
     private readonly StringBuilder template;
     
-    public TemplateBuilder() => template = new StringBuilder(100);
-    public TemplateBuilder(string head) => template = new StringBuilder(head, 100);
+    public TemplateBuilder() => template = new StringBuilder(200);
+    public TemplateBuilder(string head) => template = new StringBuilder(head, 200);
     public string Build() => template.ToString();
     
     public TemplateBuilder AddTag(string tag)

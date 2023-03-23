@@ -107,7 +107,7 @@ public class MarkdownParser: IMarkdownParser
         string[] options = null;
     
         
-        templateHTML.AddTag("form").AddAttribute("class", tagClassNames["form"]);
+        templateHTML.AddTag("form").AddAttribute("class", "template-form");
         try
         {
             var literals = markdown
@@ -176,7 +176,11 @@ public class MarkdownParser: IMarkdownParser
                         render.Append(RenderEnumTag(type, literalKey, id, options));
                     }
                 }
-                templateHTML.AddText(render.ToString());
+                templateHTML
+                    .AddTag("div").AddAttribute("class","template-element")
+                        .AddText(render.ToString())
+                    .AddTag("/div");
+                
                 /*await _redis.StringAppendAsync(strHashCode,tempBuilder.Build());
                 await _redis.KeyExpireAsync(strHashCode, TimeSpan.FromSeconds(1800));*/
             }
@@ -187,10 +191,8 @@ public class MarkdownParser: IMarkdownParser
         {
             templateHTML.Clear();
             templateHTML
-                .AddTag("div")
-                .AddAttribute("class", "alert alert-danger")
-                .AddAttribute("role", "alert")
-                .AddText(e.Message)
+                .AddTag("div").AddAttribute("class", "template-error")
+                    .AddText(e.Message)
                 .AddTag("/div");
 
             return templateHTML.Build();
@@ -200,15 +202,14 @@ public class MarkdownParser: IMarkdownParser
     private string RenderTextInputTag(string literalKey, string id, string content)
     {
         TemplateBuilder builder = new();
+        
         return builder
-            .AddTag("div")
-            .AddAttribute("class", tagClassNames["input"])
-            .AddTag("input")
-            .AddAttribute("type", "text")
-            .AddAttribute("name", id)
-            .AddAttribute("id", id)
-            .AddAttribute("placeholder", literalKey)
-            .AddAttribute("value", content)
+            .AddTag("div").AddAttribute("class", "template-input-element")
+                .AddTag("label").AddAttribute("for", id).AddAttribute("class", "template-label")
+                    .AddText(literalKey)
+                .AddTag("/label")
+                .AddTag("input").AddAttribute("type", "text").AddAttribute("name", id)
+                .AddAttribute("id", id).AddAttribute("value", content)
             .AddTag("/div")
             .Build();
     }
@@ -217,13 +218,14 @@ public class MarkdownParser: IMarkdownParser
     {
         TemplateBuilder builder = new();
         return builder
-            .AddTag("div")
-            .AddAttribute("class", tagClassNames["textarea"])
-            .AddTag("textarea")
-            .AddAttribute("name", id)
-            .AddAttribute("id", id)
-            .AddAttribute("placeholder", literalKey)
-            .AddText(content)
+            .AddTag("div").AddAttribute("class", "template-textarea-element")
+                .AddTag("label").AddAttribute("for", id).AddAttribute("class", "template-label")
+                    .AddText(literalKey)
+                .AddTag("/label")
+                .AddTag("textarea").AddAttribute("id", id).AddAttribute("name", id)
+                .AddAttribute("class", "template-textarea")
+                    .AddText(content)
+                .AddTag("/textarea")
             .AddTag("/div")
             .Build();
     }
@@ -232,16 +234,11 @@ public class MarkdownParser: IMarkdownParser
     {
         TemplateBuilder builder = new();
         builder
-            .AddTag("div")
-            .AddAttribute("class", tagClassNames["select"])
-            .AddTag("label")
-            .AddAttribute("for", id)
-            .AddText(literalKey)
-            .AddTag("/label")
-            .AddTag("select")
-            .AddAttribute("name", id)
-            .AddAttribute("id", id)
-            .AddAttribute("aria-label", literalKey);
+            .AddTag("div").AddAttribute("class", "template-select-element")
+                .AddTag("label").AddAttribute("for", id).AddAttribute("class", "template-label")
+                    .AddText(literalKey)
+                .AddTag("/label")
+            .AddTag("select").AddAttribute("id", id).AddAttribute("name", id);
 
         foreach (var option in options) 
         {
@@ -249,15 +246,13 @@ public class MarkdownParser: IMarkdownParser
             {
                 var optionTemplate = ptrVerticalBraceContent.Execute(option, 0);
                 builder
-                    .AddTag("option")
-                    .AddAttribute("value", optionTemplate.Result)
-                    .AddText(optionTemplate.Result)
+                    .AddTag("option").AddAttribute("class","template-option")
+                        .AddText(optionTemplate.Result)
                     .AddTag("/option");
             }
         }
         return builder
-            .AddTag("/select")
-            .AddTag("/div")
+            .AddTag("/select").AddTag("/div")
             .Build();
     }
 
@@ -265,7 +260,15 @@ public class MarkdownParser: IMarkdownParser
     {
         TemplateBuilder builder = new();
         var num = 1;
-        builder.AddTag("div").AddAttribute("class", tagClassNames[type]);
+
+        builder.AddTag("label").AddAttribute("for", $"id_{id}").AddAttribute("class", "template-label")
+            .AddText(literalKey)
+            .AddTag("/label")
+            .AddTag("div")
+            .AddAttribute("id", $"id_{id}") 
+            .AddAttribute("class", $"template-{type}-element"); 
+            
+        
         foreach (var option in options)
         {
             if (!IsNull(ptrEnumTags[type][0].Execute(option, 0).Result))
@@ -281,16 +284,18 @@ public class MarkdownParser: IMarkdownParser
                     .Trim();
 
                 builder
-                    .AddTag("input")
-                    .AddAttribute("type", type)
-                    .AddAttribute("id", $"{num}")
-                    .AddAttribute("name", literalKey)
-                    .AddAttribute(check)
-                    .AddTag("/input")
-                    .AddTag("label")
-                    .AddAttribute("for", $"{num}")
-                    .AddText(optionLabel)
-                    .AddTag("/label");
+                    .AddTag("div").AddAttribute("class", $"template-{type}")
+                        .AddTag("input")
+                        .AddAttribute("type", type)
+                        .AddAttribute("id", $"{num}_{id}")
+                        .AddAttribute("name", id)
+                        .AddAttribute(check)
+                        .AddTag("/input")
+                        .AddTag("label")
+                        .AddAttribute("for", $"{num}_{id}")
+                        .AddText(optionLabel)
+                        .AddTag("/label")
+                    .AddTag("/div");
                 num++;
             }
         }
