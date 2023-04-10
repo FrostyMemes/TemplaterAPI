@@ -4,7 +4,7 @@ namespace Templater.Services.Interfaces;
 
 public interface ITemplateService
 {
-    Task<IEnumerable<ResultTemplateDto>> GetAllTemplatesAsync();
+    Task<IEnumerable<AllTemplateDto>> GetAllTemplatesAsync();
     Task<ResultTemplateDto> GetTemplateAsync(Guid id);
     Task<Template> CreateTemplateAsync(CreateTemplateDto request);
     Task<Template> UpdateTemplateAsync(UpdateTemplateDto request);

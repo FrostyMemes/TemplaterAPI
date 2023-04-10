@@ -16,7 +16,7 @@ public class TemplateController : ControllerBase
     }
     
     [HttpGet("[action]")]
-    public async Task<ActionResult<ICollection<Template>>> GetAll()
+    public async Task<ActionResult<IEnumerable<AllTemplateDto>>> GetAll()
     {
         var templates = await _templateService.GetAllTemplatesAsync();
         if (templates == null)

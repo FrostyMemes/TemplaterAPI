@@ -12,15 +12,13 @@ public class TemplateService : ITemplateService
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<ResultTemplateDto>> GetAllTemplatesAsync()
+    public async Task<IEnumerable<AllTemplateDto>> GetAllTemplatesAsync()
     {
         return await _dbContext.Templates
-            .Select(template => new ResultTemplateDto()
+            .Select(template => new AllTemplateDto()
             {
                 Id = template.Id.ToString(),
                 Title = template.Title,
-                Markdown = template.Markdown,
-                Markup = template.Markup
             })
             .ToListAsync();
     }
