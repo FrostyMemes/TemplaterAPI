@@ -10,64 +10,64 @@ namespace Templater.Services.MarkdownTemplateService;
 
 public class MarkdownParser: IMarkdownParser
 {
-    static readonly PatternResult VoidResult = new (null, -1);
+    static readonly PatternResult NoPatternResult = new (null, -1);
     
     public static readonly Regex ptrMarkGroupWords = new (
         @"""([^""\\]*(\\.[^""\\]*)*)""|\'([^\'\\]*(\\.[^\'\\]*)*)\'");
     
     public static readonly AlternativePattern ptrSquareBraceArea = new (
         new RegexPattern(
-            new Regex(@"\[(.*)\]")), VoidResult);
+            new Regex(@"\[(.*)\]")), NoPatternResult);
 
     public static readonly AlternativePattern ptrRoundBraceArea = new (
         new RegexPattern(
-            new Regex(@"\((.*)\)")), VoidResult);
+            new Regex(@"\((.*)\)")), NoPatternResult);
 
     public static readonly AlternativePattern ptrVerticalBraceArea = new (
         new RegexPattern(
-            new Regex(@"\|(.*)\|")), VoidResult);
+            new Regex(@"\|(.*)\|")), NoPatternResult);
 
     public static readonly AlternativePattern ptrFigureBraceArea = new (
         new RegexPattern(
-            new Regex(@"\{(.*)\}")), VoidResult);
+            new Regex(@"\{(.*)\}")), NoPatternResult);
     
     public static readonly AlternativePattern ptrSingleMarkArea = new (
         new RegexPattern(
-            new Regex(@"\'(.*)\'")), VoidResult);
+            new Regex(@"\'(.*)\'")), NoPatternResult);
     
     public static readonly AlternativePattern ptrDuoMarkArea = new (
         new RegexPattern(
-            new Regex(@"\""(.*)\""")), VoidResult);
+            new Regex(@"\""(.*)\""")), NoPatternResult);
 
     public static readonly AlternativePattern ptrRoundBraceContent = new (
         new RegexPattern(
-            new Regex(@"(?<=\()(.*?)(?=\))")), VoidResult);
+            new Regex(@"(?<=\()(.*?)(?=\))")), NoPatternResult);
 
     public static readonly AlternativePattern ptrSquareBraceContent = new (
         new RegexPattern(
-            new Regex(@"(?<=\[)(.*?)(?=\])")), VoidResult);
+            new Regex(@"(?<=\[)(.*?)(?=\])")), NoPatternResult);
 
     public static readonly AlternativePattern ptrVerticalBraceContent = new (
         new RegexPattern(
-            new Regex(@"(?<=\|)(.*?)(?=\|)")), VoidResult);
+            new Regex(@"(?<=\|)(.*?)(?=\|)")), NoPatternResult);
 
     public static readonly AlternativePattern ptrFigureBraceContent = new (
         new RegexPattern(
-            new Regex(@"(?<=\{)(.*?)(?=\})")), VoidResult);
+            new Regex(@"(?<=\{)(.*?)(?=\})")), NoPatternResult);
 
     public static readonly AlternativePattern ptrSingleMarkContent = new (
         new RegexPattern(
-            new Regex(@"(?<=\')(.*?)(?=\')")), VoidResult);
+            new Regex(@"(?<=\')(.*?)(?=\')")), NoPatternResult);
 
     public static readonly AlternativePattern ptrDuoMarkContent = new (
         new RegexPattern(
-            new Regex(@"(?<=\"")(.*?)(?=\"")")), VoidResult);
+            new Regex(@"(?<=\"")(.*?)(?=\"")")), NoPatternResult);
     
     public static readonly AlternativePattern ptrMarksArea = new (
-        new AnyPattern(ptrSingleMarkArea, ptrDuoMarkArea), VoidResult);
+        new AnyPattern(ptrSingleMarkArea, ptrDuoMarkArea), NoPatternResult);
     
     public static readonly AlternativePattern ptrMarksContent = new (
-        new AnyPattern(ptrSingleMarkContent, ptrDuoMarkContent), VoidResult);
+        new AnyPattern(ptrSingleMarkContent, ptrDuoMarkContent), NoPatternResult);
     
     public static readonly Dictionary<string, Pattern[]> ptrEnumTags = new ()
     {
@@ -75,18 +75,6 @@ public class MarkdownParser: IMarkdownParser
         {"checkbox", new Pattern[]{ptrSquareBraceArea, ptrSquareBraceContent}}
     };
     
-    public static readonly Dictionary<string, string> tagClassNames = new ()
-    {
-        {"form", "template-form"},
-        {"input", "template-input"},
-        {"textarea", "template-textarea"},
-        {"select", "template-select"},
-        {"radio", "template-radio"},
-        {"checkbox", "template-checkbox"},
-        {"button", "template-button"},
-        {"label", "template-label"}
-    };
-
     /*private readonly IDatabase _redis;
     
     public TemplateParser(IConnectionMultiplexer muxer)
@@ -96,10 +84,10 @@ public class MarkdownParser: IMarkdownParser
     
     public async Task<string> ParseAsync(string markdown)
     {
-        TemplateBuilder templateHTML = new();
-        StringBuilder render = new();
-        StringBuilder content = new();
-        List<string> keys = new();
+        var templateHTML = new TemplateBuilder();
+        var render = new StringBuilder();
+        var content = new StringBuilder();
+        var keys = new List<string>();
         string tag, type, text, id;
         string literalKey, litrealBody;
         string redisValue, strHashCode;
@@ -293,6 +281,7 @@ public class MarkdownParser: IMarkdownParser
                         .AddTag("/input")
                         .AddTag("label")
                         .AddAttribute("for", $"{num}_{id}")
+                        .AddAttribute("class", $"{type}-label")
                         .AddText(optionLabel)
                         .AddTag("/label")
                     .AddTag("/div");
