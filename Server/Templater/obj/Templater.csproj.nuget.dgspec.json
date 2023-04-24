@@ -64,6 +64,10 @@
               "target": "Package",
               "version": "[7.0.2, )"
             },
+            "Minio.AspNetCore": {
+              "target": "Package",
+              "version": "[4.0.8, )"
+            },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
               "version": "[7.0.0, )"
