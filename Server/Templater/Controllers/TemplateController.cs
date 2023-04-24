@@ -25,7 +25,7 @@ public class TemplateController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public async Task<ActionResult<TemplateModel>> Get(string id)
+    public async Task<ActionResult<GetTemplateDto>> Get(string id)
     {
         var template = await _templateService.GetTemplateAsync(Guid.Parse(id));
         if (template == null)
