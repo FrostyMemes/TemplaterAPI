@@ -1,6 +1,6 @@
 ﻿namespace Templater.DTO;
 
-public class ResultTemplateDto
+public class GetTemplateDto
 {
     public string Id { get; set; }
     public string Title { get; set; }
