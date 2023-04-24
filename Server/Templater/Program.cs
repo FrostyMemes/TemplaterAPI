@@ -1,3 +1,4 @@
+using Minio;
 using StackExchange.Redis;
 using Templater.Services;
 using Templater.Services.Interfaces;
@@ -6,6 +7,10 @@ using Templater.Services.MarkdownTemplateService;
 var builder = WebApplication.CreateBuilder(args);
 var redisConnectionString = builder.Configuration["ConnectionStrings:RedisConnectionString"];
 var mySQLConnectionString = builder.Configuration["ConnectionStrings:MySQLConnectionString"];
+var endpoint = builder.Configuration["MinioObjectStorageParams:endpoint"];;
+var accessKey = builder.Configuration["MinioObjectStorageParams:AccessKey"];;
+var secretKey = builder.Configuration["MinioObjectStorageParams:SecretKey"];;
+
 
 // Add services to the container.
 
@@ -20,7 +25,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(mySQLConnectionString, ServerVersion.AutoDetect(mySQLConnectionString));
 });
 
+builder.Services.AddScoped(m => new MinioClient()
+    .WithEndpoint(endpoint)
+    .WithCredentials(accessKey, secretKey)
+    .Build());
+
 builder.Services.AddScoped<ITemplateService, TemplateService>();
+builder.Services.AddScoped<IObjectStorageService, MinioObjectStorageService>();
+
+
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
