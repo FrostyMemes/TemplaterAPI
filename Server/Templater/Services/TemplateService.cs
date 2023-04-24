@@ -1,4 +1,5 @@
-﻿using Templater.DTO;
+﻿using Minio;
+using Templater.DTO;
 using Templater.Services.Interfaces;
 
 namespace Templater.Services;
@@ -23,12 +24,12 @@ public class TemplateService : ITemplateService
             .ToListAsync();
     }
 
-    public async Task<ResultTemplateDto> GetTemplateAsync(Guid id)
+    public async Task<GetTemplateDto> GetTemplateAsync(Guid id)
     {
         #pragma warning disable CS8603
         return await _dbContext.Templates
             .Where(template => template.Id == id)
-            .Select(template => new ResultTemplateDto()
+            .Select(template => new GetTemplateDto()
             {
                 Id = template.Id.ToString(),
                 Title = template.Title,
