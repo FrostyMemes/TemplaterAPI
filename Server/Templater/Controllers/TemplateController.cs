@@ -61,10 +61,8 @@ public class TemplateController : ControllerBase
         
         var template = await _templateService.UpdateTemplateAsync(updateTemplate);
         if (template == null)
-        {
             return NotFound("Template isn't exist");
-        }
-        
+
         return Ok(new {template.Id, template.Title, template.Markdown, template.Markup});
     }
     
@@ -73,9 +71,7 @@ public class TemplateController : ControllerBase
     {
         var template = await _templateService.DeleteTemplateAsync(Guid.Parse(id));
         if (template == null)
-        {
             return NotFound("Template isn't exist");
-        }
 
         return Ok(new {template.Id, template.Title, template.Markdown, template.Markup});
     }
