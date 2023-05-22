@@ -10,4 +10,5 @@ public class ApplicationDbContext:DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Template> Templates { get; set; }
+    public DbSet<Document> Documents { get; set; }
 }

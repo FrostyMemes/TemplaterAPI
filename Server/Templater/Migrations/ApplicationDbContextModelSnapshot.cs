@@ -19,6 +19,26 @@ namespace Templater.Migrations
                 .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("Templater.Data.DataBaseModels.Document", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("documents");
+                });
+
             modelBuilder.Entity("Templater.Data.DataBaseModels.Template", b =>
                 {
                     b.Property<Guid>("Id")
@@ -73,6 +93,17 @@ namespace Templater.Migrations
                     b.ToTable("users");
                 });
 
+            modelBuilder.Entity("Templater.Data.DataBaseModels.Document", b =>
+                {
+                    b.HasOne("Templater.Data.DataBaseModels.User", "User")
+                        .WithMany("Documents")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Templater.Data.DataBaseModels.Template", b =>
                 {
                     b.HasOne("Templater.Data.DataBaseModels.User", "User")
@@ -86,6 +117,8 @@ namespace Templater.Migrations
 
             modelBuilder.Entity("Templater.Data.DataBaseModels.User", b =>
                 {
+                    b.Navigation("Documents");
+
                     b.Navigation("Templates");
                 });
 #pragma warning restore 612, 618
