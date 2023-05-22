@@ -1,9 +1,7 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using Microsoft.AspNetCore.Mvc;
-using StackExchange.Redis;
+﻿using Microsoft.AspNetCore.Mvc;
 using Templater.Services.MarkdownTemplateService;
 
-namespace Markdown.Controllers;
+namespace Templater.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

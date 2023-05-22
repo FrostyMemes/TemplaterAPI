@@ -1,5 +1,6 @@
 ﻿using Minio;
 using Templater.DTO;
+using Templater.DTO.TemplateDTO;
 using Templater.Services.Interfaces;
 
 namespace Templater.Services;
