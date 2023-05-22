@@ -24,13 +24,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(mySQLConnectionString, ServerVersion.AutoDetect(mySQLConnectionString));
 });
 
-/*builder.Services.AddScoped(m => new MinioClient()
+builder.Services.AddScoped(m => new MinioClient()
     .WithEndpoint(endpoint)
     .WithCredentials(accessKey, secretKey)
-    .Build());*/
+    .Build());
 
 builder.Services.AddScoped<ITemplateService, TemplateService>();
-//builder.Services.AddScoped<IObjectStorageService, MinioObjectStorageService>();
+builder.Services.AddScoped<IObjectStorageService, MinioObjectStorageService>();
 
 
 builder.Services.AddHttpClient();
