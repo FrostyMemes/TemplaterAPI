@@ -10,6 +10,6 @@ public class Document
     public string FileName { get; set; }
     
     public int UserId { get; set; }
-    
+
     public User User { get; set; }
 }
