@@ -1,4 +1,4 @@
-﻿namespace Templater.DTO;
+﻿namespace Templater.DTO.TemplateDTO;
 
 public class AllTemplateDto
 {

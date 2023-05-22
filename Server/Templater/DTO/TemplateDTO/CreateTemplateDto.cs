@@ -1,9 +1,9 @@
-﻿namespace Templater.DTO;
+﻿namespace Templater.DTO.TemplateDTO;
 
-public class GetTemplateDto
+public class CreateTemplateDto
 {
-    public string Id { get; set; }
     public string Title { get; set; }
     public string Markdown { get; set; }
     public string Markup { get; set; }
+    public int UserId { get; set; }
 }

@@ -1,8 +1,8 @@
-﻿namespace Templater.DTO;
+﻿namespace Templater.DTO.TemplateDTO;
 
-public class UpdateTemplateDto
+public class GetTemplateDto
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string Title { get; set; }
     public string Markdown { get; set; }
     public string Markup { get; set; }
