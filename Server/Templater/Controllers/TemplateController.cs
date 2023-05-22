@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Templater.DTO;
+using Templater.DTO.TemplateDTO;
 using Templater.Services.Interfaces;
 
 namespace Templater.Controllers;
@@ -15,7 +16,7 @@ public class TemplateController : ControllerBase
         _templateService = templateService;
     }
     
-    [HttpGet("[action]")]
+    [HttpGet("get-all")]
     public async Task<ActionResult<IEnumerable<AllTemplateDto>>> GetAll()
     {
         var templates = await _templateService.GetAllTemplatesAsync();
