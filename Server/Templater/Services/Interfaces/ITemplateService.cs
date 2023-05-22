@@ -1,4 +1,5 @@
 ﻿using Templater.DTO;
+using Templater.DTO.TemplateDTO;
 
 namespace Templater.Services.Interfaces;
 
