@@ -12,11 +12,8 @@ var accessKey = builder.Configuration["MinioObjectStorageParams:AccessKey"];;
 var secretKey = builder.Configuration["MinioObjectStorageParams:SecretKey"];;
 
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IMarkdownParser, MarkdownParser>();
 //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisConnectionString));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -29,7 +26,10 @@ builder.Services.AddScoped(m => new MinioClient()
     .WithCredentials(accessKey, secretKey)
     .Build());
 
+
+builder.Services.AddScoped<IMarkdownParser, MarkdownParser>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IObjectStorageService, MinioObjectStorageService>();
 
 
