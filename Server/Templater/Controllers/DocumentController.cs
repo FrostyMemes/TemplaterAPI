@@ -21,14 +21,14 @@ public class DocumentController: ControllerBase
     public async Task<ActionResult> GetFileStream(string id)
     {
         var stream = await _objectStorageService.GetObjectStreamAsync(id);
-        var fileName = await _objectStorageService.GetFileNameAsync(id);
+        var fileName = await _documentService.GetFileNameAsync(id);
         return File(stream, "APPLICATION/octet-stream", fileName);
     }
     
     [HttpGet("get-document-link/{id}")]
     public async Task<ActionResult> GetFileLink(string id)
     {
-        var fileName = await _objectStorageService.GetFileNameAsync(id);
+        var fileName = await _documentService.GetFileNameAsync(id);
         var url = await _objectStorageService.GetObjectLinkAsync(id, fileName);
         return Ok(url);
     }

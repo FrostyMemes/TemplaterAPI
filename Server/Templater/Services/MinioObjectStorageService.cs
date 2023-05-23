@@ -55,12 +55,4 @@ public class MinioObjectStorageService: IObjectStorageService
         await _client.PutObjectAsync(document);
         return newDocument.Id;
     }
-
-    public async Task<string?> GetFileNameAsync(string id)
-    {
-        return await _dbContext.Documents
-            .Where(document => document.Id.Equals(Guid.Parse(id)))
-            .Select(document => document.FileName)
-            .FirstOrDefaultAsync();
-    }
 }

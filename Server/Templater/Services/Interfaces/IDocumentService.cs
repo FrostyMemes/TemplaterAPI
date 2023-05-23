@@ -8,4 +8,5 @@ public interface IDocumentService
     Task<IEnumerable<AllDocumentsDto>> GetAllDocumentsAsync();
     Task<GetDocumentDto> GetDocumentAsync(Guid id);
     Task<Document> DeleteDocumentAsync(Guid id);
+    Task<string?> GetFileNameAsync(string id);
 }

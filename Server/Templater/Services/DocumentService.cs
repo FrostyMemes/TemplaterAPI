@@ -46,4 +46,12 @@ public class DocumentService: IDocumentService
         }
         return document;
     }
+    
+    public async Task<string?> GetFileNameAsync(string id)
+    {
+        return await _dbContext.Documents
+            .Where(document => document.Id.Equals(Guid.Parse(id)))
+            .Select(document => document.FileName)
+            .FirstOrDefaultAsync();
+    }
 }
