@@ -24,4 +24,8 @@
         <PackageReference Include="TemplateEngine.Docx" Version="1.1.5" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Results\" />
+    </ItemGroup>
+
 </Project>
