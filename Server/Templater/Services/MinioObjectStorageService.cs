@@ -55,4 +55,12 @@ public class MinioObjectStorageService: IObjectStorageService
         await _client.PutObjectAsync(document);
         return newDocument.Id;
     }
+
+    public async Task DeleteObjectAsync(string id)
+    {
+        var rmArgs = new RemoveObjectArgs()
+            .WithBucket("docx-templater-storage")
+            .WithObject(id);
+        await _client.RemoveObjectAsync(rmArgs);
+    }
 }
