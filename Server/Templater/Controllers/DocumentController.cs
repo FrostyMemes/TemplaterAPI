@@ -58,7 +58,8 @@ public class DocumentController: ControllerBase
         var document = await _documentService.DeleteDocumentAsync(Guid.Parse(id));
         if (document == null)
             return NotFound("Document isn't exist");
-        
+
+        await _objectStorageService.DeleteObjectAsync(id);
         return Ok(new {document.Id, document.FileName});
     }
 }
