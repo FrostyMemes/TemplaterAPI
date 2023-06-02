@@ -17,8 +17,10 @@ public class MinioObjectStorageService: IObjectStorageService
     public async Task<Stream> GetObjectStreamAsync(string id)
     {
         var fileStream = new MemoryStream();
-        var fileObject = new GetObjectArgs().WithBucket("docx-templater-storage")
-            .WithObject(id).WithCallbackStream(stream => stream.CopyToAsync(fileStream));
+        var fileObject = new GetObjectArgs()
+            .WithBucket("docx-templater-storage")
+            .WithObject(id)
+            .WithCallbackStream(stream => stream.CopyToAsync(fileStream));
         await _client.GetObjectAsync(fileObject);
         fileStream.Seek(0, SeekOrigin.Begin);
         return fileStream;
