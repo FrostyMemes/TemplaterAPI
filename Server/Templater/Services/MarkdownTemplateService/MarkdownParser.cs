@@ -26,10 +26,6 @@ public class MarkdownParser: IMarkdownParser
     public static readonly AlternativePattern ptrVerticalBraceArea = new (
         new RegexPattern(
             new Regex(@"\|(.*)\|")), NoPatternResult);
-
-    public static readonly AlternativePattern ptrFigureBraceArea = new (
-        new RegexPattern(
-            new Regex(@"\{(.*)\}")), NoPatternResult);
     
     public static readonly AlternativePattern ptrSingleMarkArea = new (
         new RegexPattern(
@@ -93,16 +89,12 @@ public class MarkdownParser: IMarkdownParser
         string redisValue, strHashCode;
         string[] literalParts = null;
         string[] options = null;
-    
         
         templateHTML.AddTag("form").AddAttribute("class", "template-form");
+        
         try
         {
-            var literals = markdown
-                .Split(';')
-                .Where(literal => !string.IsNullOrWhiteSpace(literal))
-                .Select(literal => literal.Trim())
-                .ToArray();
+            var literals = GetLiterals(markdown).ToArray();
 
             foreach (var literal in literals)
             {
@@ -115,7 +107,6 @@ public class MarkdownParser: IMarkdownParser
                 }*/
                 
                 literalParts = literal.Split(':');
-                
                 literalKey = literalParts[0].Trim();
                 litrealBody = literalParts[1].Trim();
                 
@@ -136,7 +127,7 @@ public class MarkdownParser: IMarkdownParser
                     foreach (Match match in markGroup) 
                     { 
                         text = ptrMarksContent.Execute(match.Value, 0).Result;
-                        content.Append(string.IsNullOrEmpty(text) ? "\n" : $"{text}\n");
+                        content.Append(string.IsNullOrEmpty(text) ? "" : $"{text}\n");
                     }
                     
                     render.Append(tag.Equals("input") 
@@ -185,6 +176,13 @@ public class MarkdownParser: IMarkdownParser
 
             return templateHTML.Build();
         }
+    }
+
+    private IEnumerable<string> GetLiterals(string markdown)
+    {
+        return markdown.Split(';')
+            .Where(literal => !string.IsNullOrWhiteSpace(literal))
+            .Select(literal => literal.Trim());
     }
 
     private string RenderTextInputTag(string literalKey, string id, string content)
@@ -249,12 +247,13 @@ public class MarkdownParser: IMarkdownParser
         TemplateBuilder builder = new();
         var num = 1;
 
-        builder.AddTag("label").AddAttribute("for", $"id_{id}").AddAttribute("class", "template-label")
+        builder.AddTag("div")
+            .AddAttribute("id", $"id_{id}")
+            .AddAttribute("class", $"template-{type}-element")
+            .AddTag("label").AddAttribute("for", $"id_{id}").AddAttribute("class", "template-label")
             .AddText(literalKey)
-            .AddTag("/label")
-            .AddTag("div")
-            .AddAttribute("id", $"id_{id}") 
-            .AddAttribute("class", $"template-{type}-element"); 
+            .AddTag("/label");
+
             
         
         foreach (var option in options)
